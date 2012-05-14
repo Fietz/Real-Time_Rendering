@@ -4,11 +4,15 @@
 <title>Aufgabe 2 L&ouml;sung</title>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
-<script type="text/javascript" src="../../prettify/prettify.js"></script>
+<link rel="stylesheet" type="text/css" href="../../style/master.css" media="all" charset="utf-8">
+<link href="../../script/prettify/prettify.css" type="text/css" rel="stylesheet" />
+
+<script src="../../script/jquery-1.7.2.js" type="text/javascript"></script>
+<script type="text/javascript" src="../../script/prettify/prettify.js"></script>
 <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
 <script type="text/javascript" src="webgl-utils.js"></script>
 <script type="text/javascript" src="sphere.js"></script>
-<link href="../../prettify/prettify.css" type="text/css" rel="stylesheet" />
+
 <script id="shader-fs" type="x-shader/x-fragment">
     precision mediump float;
 
@@ -201,32 +205,28 @@
 	}
 </script>
 <style>
-img {
-	float: left;
-}
+    img {
+        float: left;
+    }
 
-canvas {
-margin: 10px;
-}
+    canvas {
+        margin: 10px;
+    }
 
-pre.prettyprint {
-border:none !important;
-display:block !important;
-clear:both;
-}
+    pre.prettyprint {
+        border:none !important;
+        display:block !important;
+        clear:both;
+    }
+
 </style>
 </head>
 <body onload="webGLStart();">
-<header><h1>Manuel Kaiser s794771 Mail:rmkaiser42@web.de <br />
-			Dennis Fietz s794827 Mail:Fietz.Dennis@gmail.com</h1></header>
-	<nav>
-		<h4>L&ouml;sungen</h4>
-		<ul>
-			<li><a href="Aufgaben/Aufgabe2/index.html" target="frame">Aufgabe
-					2</a></li>
-		</ul>
-	</nav>
-	<div id="content">
+<header></header>
+	<nav><ul></ul></nav>
+    <hr>
+	<section id="content">
+        <h2>Lösung der Aufgabe 2</h2>
 		<div class="demo">
 			<canvas id="lesson04-canvas" style="border: none;" width="500"
 				height="500"></canvas>
@@ -280,7 +280,9 @@ tesselate(vektorA, vektorB, vektorC, rekursionsgrad){
 			Ist der letzte Rekursionsschritt erreicht, werden die Koordinaten der Vektoren abgespeichert und an zwei Buffer (einer für die Koordinaten, einer für die Farbwerte) übertragen. Beim  Zeichnen werden dann diese Buffer verwendet, um die Kugel darzustellen.
 			</p>
 		</div>
-	</div>
-
+	</section>
+<hr>
+<footer></footer>
+<script src="../../script/cms.js" type="text/javascript"></script>
 </body>
 </html>

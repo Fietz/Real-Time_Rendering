@@ -1,0 +1,26 @@
+header,
+nav,
+section,
+footer{
+    width:950px;
+    margin: 0 auto;
+}
+
+hr {
+    clear:both;
+    width:950px;
+}
+
+nav ul {
+    margin-left: -40px;
+    list-style: none;
+}
+nav ul li {
+    float:left;
+    margin-right: 10px;
+}
+
+section{
+    clear:left;
+}
+
