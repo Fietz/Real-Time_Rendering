@@ -42,7 +42,7 @@ function perFaceNormals(arrays) {
 
 // The main entry point.
 function initialize() {
-  // Setup the canvas widget for WebGL. 
+  // Setup the canvas widget for WebGL.
   window.canvas = document.getElementById("canvas");
   window.gl = tdl.webgl.setupWebGL(canvas);
 
@@ -60,7 +60,7 @@ function initialize() {
   // Create a sphere mesh that initialy is renderd using the first shader
   // program.
   var sphere = new tdl.models.Model(
-    programs[pnum], 
+    programs[pnum],
     tdl.primitives.createSphere(0.4, 10, 12),
     textures);
 
@@ -108,7 +108,7 @@ function initialize() {
     lightIntensity: lightIntensity,
     time: clock
   };
- 
+
   // Uniform variables that change for each sphere in a frame.
   var spherePer = {
     model: model,
@@ -131,9 +131,9 @@ function initialize() {
     eyePosition[0] = Math.sin(clock * eyeSpeed) * eyeRadius;
     eyePosition[1] = eyeHeight;
     eyePosition[2] = Math.cos(clock * eyeSpeed) * eyeRadius;
-  
+
     // Setup global WebGL rendering behavior.
-    gl.viewport(0, 0, canvas.width, canvas.width * 0.6); 
+    gl.viewport(0, 0, canvas.width, canvas.width * 0.6);
     gl.colorMask(true, true, true, true);
     gl.depthMask(true);
     gl.clearColor(0.5, 0.5, 0.5, 1);
@@ -145,14 +145,14 @@ function initialize() {
 
     // Calculate the perspective projection matrix.
     mat4.perspective(
-      60, 
-      canvas.clientWidth / canvas.clientHeight, 
+      60,
+      canvas.clientWidth / canvas.clientHeight,
       0.1, 10,
       projection);
 
     // Calculate the viewing transfomation.
     mat4.lookAt(
-      eyePosition, target, up, 
+      eyePosition, target, up,
       view);
 
     // Prepare rendering of spheres.
