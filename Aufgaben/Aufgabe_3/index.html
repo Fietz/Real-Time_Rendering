@@ -150,19 +150,20 @@
 
 
 
-        float toon2(float that){
-            return float(ceil(that * toonSteps) / toonSteps);
+
+        vec3 toon(vec3 that){
+            return vec3( ceil(that.x * toonSteps) / toonSteps ,
+                         ceil(that.y * toonSteps) / toonSteps ,
+                         ceil(that.z * toonSteps) / toonSteps );
         }
 
-        vec3 toon(vec3 color){
-            return vec3( ceil(color.r * toonSteps) / toonSteps ,
-                         ceil(color.g * toonSteps) / toonSteps ,
-                         ceil(color.b * toonSteps) / toonSteps );
+        float toon(float that){
+            return toon(vec3(that, 0.0, 0.0)).x;
         }
 
         vec3 lambert(vec3 normal, vec3 light, vec3 intensity, vec3 reflectivity) {
             return 0.1 * reflectivity * intensity +
-                   0.6 * reflectivity * intensity * toon2(max(0.0, dot(normal, light)));
+                   0.6 * reflectivity * intensity * toon(max(0.0, dot(normal, light)));
         }
 
         vec3 phong(vec3 normal, vec3 eye, vec3 light, vec3 intensity, vec3 reflectivity) {
