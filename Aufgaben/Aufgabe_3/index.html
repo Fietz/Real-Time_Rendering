@@ -121,11 +121,9 @@
         varying vec3 normalW;
         varying vec3 lightDirectionW;
         varying vec3 cameraDirectionW;
-        varying float toonSteps;
 
 
         void main() {
-        toonSteps = 3.0;
         vec4 positionW = model * position;
         normalW = (model * vec4(normal, 0.0)).xyz;
         lightDirectionW = lightPosition - positionW.xyz;
@@ -140,50 +138,47 @@
 
         uniform vec3 color;
         uniform vec3 lightColor;
-        varying float toonSteps;
+
 
         varying vec3 normalW;
         varying vec3 lightDirectionW;
         varying vec3 cameraDirectionW;
 
+        float toonSteps = 2.0;
 
 
 
 
-
-        vec3 toon(vec3 that){
-            return vec3( ceil(that.x * toonSteps) / toonSteps ,
-                         ceil(that.y * toonSteps) / toonSteps ,
-                         ceil(that.z * toonSteps) / toonSteps );
+        vec3 lambert(vec3 normal, vec3 lightDirection, vec3 lightColor, vec3 color) {
+            return 0.1 * color * lightColor +
+                   0.6 * color * lightColor *
+                   (ceil(max(0.0, dot(normal, lightDirection))*toonSteps)/toonSteps);
         }
 
-        float toon(float that){
-            return toon(vec3(that, 0.0, 0.0)).x;
+        vec3 phong(vec3 normal, vec3 camera, vec3 lightDirection, vec3 lightColor, vec3 color) {
+
+            float toonFactor = max(0.0, dot(reflect(-camera, normal),lightDirection));
+
+            if(toonFactor >= 0.7){
+                toonFactor = 1.0;
+            }else{
+                toonFactor = 0.0;
+            }
+
+            return  lambert(normal, lightDirection, lightColor, color)
+                    + 0.6 * lightColor * toonFactor
+                    ;
         }
-
-        vec3 lambert(vec3 normal, vec3 light, vec3 intensity, vec3 reflectivity) {
-            return 0.1 * reflectivity * intensity +
-                   0.6 * reflectivity * intensity * toon(max(0.0, dot(normal, light)));
-        }
-
-        vec3 phong(vec3 normal, vec3 eye, vec3 light, vec3 intensity, vec3 reflectivity) {
-            return  lambert(normal, light, intensity, reflectivity)
-                    /*+
-                    0.3 * intensity * pow(max(0.0, dot(reflect(-eye, normal),
-                    light)), 10.0)
-                    */;
-
-        }
-
-
 
         void main() {
+
             gl_FragColor.rgb = phong(
-            normalize(normalW),
-            normalize(cameraDirectionW),
-            normalize(lightDirectionW),
-            lightColor,
-            color);
+                normalize(normalW),
+                normalize(cameraDirectionW),
+                normalize(lightDirectionW),
+                lightColor,
+                color
+            );
             gl_FragColor.a = 1.0;
         }
     </script>

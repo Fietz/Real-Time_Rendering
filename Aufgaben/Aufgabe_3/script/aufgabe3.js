@@ -13,6 +13,7 @@ jQuery(window).on('load',function(jQuery){
     var shader = getShader(),
         modelToDraw = new tdl.models.Model(
             shader['Einfarbig'],
+            //tdl.primitives.createSphere(0.4,15,15),
             //tdl.primitives.createTruncatedCone(0.5,0,1,12,12,true,true),
             tdl.primitives.createTorus(0.3,0.2,25,25),
             {}
@@ -23,7 +24,7 @@ jQuery(window).on('load',function(jQuery){
                 'view':mat4.create(),
                 'lightPosition':vec3.create([10,10,10]),
                 'lightColor':vec3.create([1,1,1]),
-                'camera':vec3.create()
+                'camera':vec3.create(0,2,0)
             },
             'unique':{
                 'model':mat4.create(),
@@ -99,7 +100,9 @@ jQuery(window).on('load',function(jQuery){
                 for(var depth = 0; depth < 3; depth += 1){
                     mat4.identity(uniformVars.unique.model);
                     mat4.translate(uniformVars.unique.model, [width - 1,height - 1,depth -1]);
-                    mat4.rotateX(uniformVars.unique.model,1.5707963267949);
+                    //PI/2 RAD ==> 90°
+                    mat4.rotateX(uniformVars.unique.model,Math.PI/2);
+
 
                     uniformVars.unique.color[0]= width / 2;
                     uniformVars.unique.color[1]= height / 2;
