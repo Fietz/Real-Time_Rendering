@@ -13,7 +13,8 @@ jQuery(window).on('load',function(jQuery){
     var shader = getShader(),
         modelToDraw = new tdl.models.Model(
             shader['Einfarbig'],
-            tdl.primitives.createSphere(.35,9,2),
+            //tdl.primitives.createTruncatedCone(0.5,0,1,12,12,true,true),
+            tdl.primitives.createTorus(0.3,0.2,25,25),
             {}
         ),
         uniformVars = {
@@ -32,7 +33,7 @@ jQuery(window).on('load',function(jQuery){
         degree = 0;
     //----------------------------------------------------------------------------------
     function initCanvas(){
-        $canvas.attr('width',$content.width() *.5)
+        $canvas.attr('width',$content.width())
                .attr('height',$canvas.width());
 
     };
@@ -96,7 +97,10 @@ jQuery(window).on('load',function(jQuery){
         for (var width = 0; width < 3 ; width += 1){
             for (var height = 0; height < 3; height += 1){
                 for(var depth = 0; depth < 3; depth += 1){
-                    mat4.translate(mat4.identity(uniformVars.unique.model), [width - 1,height - 1,depth -1]);
+                    mat4.identity(uniformVars.unique.model);
+                    mat4.translate(uniformVars.unique.model, [width - 1,height - 1,depth -1]);
+                    mat4.rotateX(uniformVars.unique.model,1.5707963267949);
+
                     uniformVars.unique.color[0]= width / 2;
                     uniformVars.unique.color[1]= height / 2;
                     uniformVars.unique.color[2]= depth / 2;

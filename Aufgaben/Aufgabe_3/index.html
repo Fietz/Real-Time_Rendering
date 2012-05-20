@@ -3,7 +3,7 @@
 <head>
     <title>Real-Time Rendering SS12</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- link rel="stylesheet" type="text/css" href="../../style/master.css" media="all" charset="utf-8" -->
+    <link rel="stylesheet" type="text/css" href="../../style/master.css" media="all" charset="utf-8">
     <script src="../../script/jquery-1.7.2.js" type="text/javascript"></script>
     
     <script src="script/gl-matrix.js" type="text/javascript"></script>
@@ -113,14 +113,19 @@
         uniform vec3 lightPosition;
         uniform vec3 camera;
 
+
+
         attribute vec4 position;
         attribute vec3 normal;
 
         varying vec3 normalW;
         varying vec3 lightDirectionW;
         varying vec3 cameraDirectionW;
+        varying float toonSteps;
+
 
         void main() {
+        toonSteps = 3.0;
         vec4 positionW = model * position;
         normalW = (model * vec4(normal, 0.0)).xyz;
         lightDirectionW = lightPosition - positionW.xyz;
@@ -135,27 +140,38 @@
 
         uniform vec3 color;
         uniform vec3 lightColor;
+        varying float toonSteps;
 
         varying vec3 normalW;
         varying vec3 lightDirectionW;
         varying vec3 cameraDirectionW;
 
-        vec3 lambert(vec3 normal, vec3 light, vec3 intensity, vec3 reflectivity) {
-            return 0.1 * reflectivity * intensity +
-            0.6 * reflectivity * intensity * max(0.0, dot(normal, light));
+
+
+
+
+        float toon2(float that){
+            return float(ceil(that * toonSteps) / toonSteps);
         }
 
         vec3 toon(vec3 color){
-        return vec3(float(int(color.r * 4.0)/4),
-                    float(int(color.g * 4.0)/4),
-                    float(int(color.b * 4.0)/4));
+            return vec3( ceil(color.r * toonSteps) / toonSteps ,
+                         ceil(color.g * toonSteps) / toonSteps ,
+                         ceil(color.b * toonSteps) / toonSteps );
+        }
+
+        vec3 lambert(vec3 normal, vec3 light, vec3 intensity, vec3 reflectivity) {
+            return 0.1 * reflectivity * intensity +
+                   0.6 * reflectivity * intensity * toon2(max(0.0, dot(normal, light)));
         }
 
         vec3 phong(vec3 normal, vec3 eye, vec3 light, vec3 intensity, vec3 reflectivity) {
-            return  (toon(lambert(normal, light, intensity, reflectivity)));
+            return  lambert(normal, light, intensity, reflectivity)
                     /*+
                     0.3 * intensity * pow(max(0.0, dot(reflect(-eye, normal),
-                    light)), 10.0)));*/
+                    light)), 10.0)
+                    */;
+
         }
 
 
@@ -165,10 +181,12 @@
             normalize(normalW),
             normalize(cameraDirectionW),
             normalize(lightDirectionW),
-            lightColor, color);
+            lightColor,
+            color);
             gl_FragColor.a = 1.0;
         }
     </script>
+    <script src="../../script/cms.js" type="text/javascript"></script>
     <script src="script/aufgabe3.js" type="text/javascript"></script>
 </body>
 </html>
