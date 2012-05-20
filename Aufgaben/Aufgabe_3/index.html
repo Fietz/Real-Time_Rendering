@@ -146,11 +146,9 @@
         }
 
         vec3 toon(vec3 color){
-        color.r = round(color.r * 4)/4;
-        color.g = round(color.g * 4)/4;
-        color.b = round(color.b * 4)/4);
-
-        return color;
+        return vec3(float(int(color.r * 4.0)/4),
+                    float(int(color.g * 4.0)/4),
+                    float(int(color.b * 4.0)/4));
         }
 
         vec3 phong(vec3 normal, vec3 eye, vec3 light, vec3 intensity, vec3 reflectivity) {
