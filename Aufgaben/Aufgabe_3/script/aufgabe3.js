@@ -69,6 +69,21 @@ jQuery(window).on('load',function(jQuery){
         return shader;
     }
 
+    function getLights(){
+        var lights = {'positions':[],
+                      'colors':[]};
+        var $lightRows = $('#lights tr[id^="light"]');
+        $lightRows.each(function(index, row){
+            $inputs = $('input[type="number"]',row);
+            console.log($inputs);
+            //lights.positions[row.id] = vec3.create($inputs[0].value, $inputs[1].value, $inputs[2].value);
+            lights.positions[row.id] = vec3.create(12.0,13.0,14.0);
+
+
+        })
+        return lights;
+    }
+
     function render() {
         initGl();
         tdl.webgl.requestAnimationFrame(render, canvas);
@@ -116,6 +131,7 @@ jQuery(window).on('load',function(jQuery){
     //@Main
     (function(){
         initCanvas();
+        console.log(getLights());
         initUI();
         render();
     })();
