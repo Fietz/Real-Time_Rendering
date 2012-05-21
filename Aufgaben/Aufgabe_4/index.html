@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Real-Time Rendering SS12</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="../../style/master.css" media="all" charset="utf-8">
     <script src="../../script/jquery-1.7.2.js" type="text/javascript"></script>
     
@@ -11,16 +10,8 @@
     <script src="script/tdl/webgl.js" type="text/javascript"></script>
     <script src="script/tdl/models.js" type="text/javascript"></script>
     <script src="script/tdl/primitives.js" type="text/javascript"></script>
+    <script src="script/tdl/textures.js" type="text/javascript"></script>
     <script src="script/tdl/programs.js" type="text/javascript"></script>
-
-    <style>
-        section#content table tr td input{
-            width:50px;
-        }
-        section#content table tr td.break{
-            border-right: 1px solid black;
-        }
-    </style>
 </head>
 <body>
     <header></header>
@@ -29,71 +20,34 @@
     <section id="content">
         <h2>Aufgabe 3</h2>
         <canvas id ="canvas" style="border: none;"></canvas>
-        <select id="shaderSelect"></select>
-        <div id="lights">
-            <table>
-                <tr id="discription">
-                    <td>on/off</td>
-                    <td>X</td>
-                    <td>Y</td>
-                    <td class="break">Z</td>
-                    <td>R</td>
-                    <td>G</td>
-                    <td>B</td>
-                </tr>
-                <tr id="light0">
-                    <td><input type="checkbox" checked></td>
-                    <td><input type="number" value="10"></td>
-                    <td><input type="number" value="10"></td>
-                    <td class="break"><input type="number" value="10"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
-                </tr>
-                <tr id="light1">
-                    <td><input type="checkbox"></td>
-                    <td><input type="number" value="-10"></td>
-                    <td><input type="number" value="-10"></td>
-                    <td class="break"><input type="number" value="-10"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
-                </tr>
-                <tr id="light2">
-                    <td><input type="checkbox"></td>
-                    <td><input type="number" value="-10"></td>
-                    <td><input type="number" value="10"></td>
-                    <td class="break"><input type="number" value="10"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
-                </tr>
-                <tr id="light3">
-                    <td><input type="checkbox" checked></td>
-                    <td><input type="number" value="10"></td>
-                    <td><input type="number" value="-10"></td>
-                    <td class="break"><input type="number" value="-10"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
-                </tr>
-
-            </table>
-        </div>
     </section>
     <hr>
     <footer></footer>
-    <!-- script src="../../script/cms.js" type="text/javascript"></script-->
-    <!-- SHADER -->
+
     <script id="vs0" type="text/glsl" name="Einfarbig">
         uniform mat4 projection;
         uniform mat4 view;
         uniform mat4 model;
 
+        uniform vec3 lightPosition;
+        uniform vec3 camera;
+
         //from tdl.primitiv return
         attribute vec4 position;
+        attribute vec3 normal;
+
+        varying vec3 normalW;
+        varying vec3 lightDirectionW;
+        varying vec3 cameraDirectionW;
+        varying vec4 positionW;
+
 
         void main() {
+        positionW = position;
+        lightDirectionW = lightPosition - positionW.xyz;
+        cameraDirectionW = camera - positionW.xyz;
+
+        normalW = (model * vec4(normal, 0.0)).xyz;
         gl_Position = projection * view * model * position;
         }
     </script>
@@ -102,179 +56,38 @@
         precision highp float;
 
         uniform vec3 color;
-
-        void main() {
-        gl_FragColor.rgb = 0.7 * color;
-        gl_FragColor.a = 1.0;
-        }
-    </script>
-
-    <script id="vs1" type="text/glsl" name="Phong">
-        uniform mat4 projection;
-        uniform mat4 view;
-        uniform mat4 model;
-
-        uniform float lightPositions[12];
-        uniform vec3 camera;
-
-        attribute vec4 position;
-        attribute vec3 normal;
+        uniform sampler2D t4;
 
         varying vec3 normalW;
         varying vec3 lightDirectionW;
         varying vec3 cameraDirectionW;
+        varying vec4 positionW;
 
-        void main() {
-
-        vec3 tempVec = vec3(lightPositions[0], lightPositions[1], lightPositions[2]);
-
-        vec4 positionW = model * position;
-        normalW = (model * vec4(normal, 0.0)).xyz;
-        lightDirectionW = tempVec - positionW.xyz;
-        cameraDirectionW = camera - positionW.xyz;
-
-        gl_Position = projection * view * positionW;
-        }
-    </script>
-
-    <script id="fs1" type="text/glsl">
-        precision highp float;
-
-        uniform vec3 color;
-        uniform float lightColors[16];
-
-        varying vec3 normalW;
-        varying vec3 lightDirectionW;
-        varying vec3 cameraDirectionW;
-
-        vec3 lambert(vec3 normal, vec3 light, vec3 intensity, vec3 reflectivity) {
+        vec3 lambert(vec3 normal, vec3 light,
+        vec3 intensity, vec3 reflectivity) {
         return 0.1 * reflectivity * intensity +
-        0.6 * reflectivity * intensity * max(0.0, dot(normal, light));
+        reflectivity * intensity * max(0.0, dot(normal, light));
         }
 
-        vec3 phong(vec3 normal, vec3 eye, vec3 light, vec3 intensity, vec3 reflectivity) {
-        return lambert(normal, light, intensity, reflectivity) +
-        0.3 * intensity * pow(max(0.0, dot(reflect(-eye, normal),
-        light)), 10.0);
+        vec3 phong(vec3 normal, vec3 eye, vec3 light,
+        vec3 intensity, vec3 reflectivity) {
+            return lambert(normal, light, intensity, reflectivity) +
+            intensity * pow(max(0.0, dot(reflect(-eye, normal),
+            light)), 10.0);
         }
+
 
         void main() {
-
-        vec3 lightColorVec = vec3(lightColors[0], lightColors[1], lightColors[2]);
-
-
+        vec3 texColor = texture2D(t4, vec2((normalW.x + 1.0)/2.0, 1.0-(normalW.y+1.0)/2.0)).rgb;
         gl_FragColor.rgb = phong(
-        normalize(normalW),
-        normalize(cameraDirectionW),
-        normalize(lightDirectionW),
-        lightColorVec, color);
-        gl_FragColor.a = 1.0;
-        }
-    </script>
-    <script id="vs2" type="text/glsl" name="Toon">
-        uniform mat4 projection;
-        uniform mat4 view;
-        uniform mat4 model;
-
-        uniform float lightPositions[12];
-        uniform vec3 camera;
-
-
-
-        attribute vec4 position;
-        attribute vec3 normal;
-
-        varying vec3 normalW;
-        varying float lightDirectionW[12];
-        varying vec3 cameraDirectionW;
-
-
-        void main() {
-
-
-        vec4 positionW = model * position;
-        normalW = (model * vec4(normal, 0.0)).xyz;
-        //lightDirectionW = tempVec - positionW.xyz;
-
-        for(int i = 0; i <= 3; i++) {
-            lightDirectionW[i*3] = lightPositions[i*4] - positionW.x;
-            lightDirectionW[i*3+1] = lightPositions[i*3+1] - positionW.x;
-            lightDirectionW[i*3+2] = lightPositions[i*3+2] - positionW.x;
-
-        }
-
-
-
-        cameraDirectionW = camera - positionW.xyz;
-
-        gl_Position = projection * view * positionW;
-        }
-    </script>
-
-    <script id="fs2" type="text/glsl">
-        precision highp float;
-
-        uniform vec3 color;
-        uniform float lightColors[16];
-
-
-        varying vec3 normalW;
-        varying float lightDirectionW[12];
-        varying vec3 cameraDirectionW;
-
-        float toonSteps = 2.0;
-
-
-
-
-        vec3 lambert(vec3 normal, vec3 lightDirection, vec3 lightColor, vec3 color) {
-        return 0.1 * color * lightColor +
-        0.6 * color * lightColor *
-        (ceil(max(0.0, dot(normal, lightDirection))*toonSteps)/toonSteps);
-        }
-
-        vec3 phong(vec3 normal, vec3 camera, vec3 lightDirection, vec3 lightColor, vec3 color) {
-
-        float toonFactor = max(0.0, dot(reflect(-camera, normal),lightDirection));
-
-        if(toonFactor >= 0.7){
-        toonFactor = 1.0;
-        }else{
-        toonFactor = 0.0;
-        }
-
-        return  lambert(normal, lightDirection, lightColor, color)
-        + 0.6 * lightColor * toonFactor
-        ;
-        }
-
-        void main() {
-
-
-        vec3 rgbVec = vec3(0);
-
-
-        for(int i = 0; i <= 3; i++) {
-        if(lightColors[i*4+3] == 1.0){
-        vec3 lightDirectionVec = vec3(lightDirectionW[i*3], lightDirectionW[i*3+1], lightDirectionW[i*3+2]);
-
-        vec3 lightColorVec = vec3(lightColors[i*4], lightColors[i*4+1], lightColors[i*4+2]);
-            rgbVec += phong(
-                normalize(normalW),
-                normalize(cameraDirectionW),
-                normalize(lightDirectionVec),
-                lightColorVec,
-                color
-            );
-        }
-        }
-
-
-        gl_FragColor.rgb = rgbVec;
+            normalize(normalW),
+            normalize(cameraDirectionW),
+            normalize(lightDirectionW),
+            color, texColor);
         gl_FragColor.a = 1.0;
         }
     </script>
     <script src="../../script/cms.js" type="text/javascript"></script>
-    <script src="script/aufgabe3.js" type="text/javascript"></script>
+    <script src="script/aufgabe4.js" type="text/javascript"></script>
 </body>
 </html>
