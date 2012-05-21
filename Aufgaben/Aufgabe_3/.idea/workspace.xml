@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0c36b336-76b7-426d-a7e0-06fc1e651a75" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/script/aufgabe3.js" afterPath="$PROJECT_DIR$/script/aufgabe3.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Aufgabe_3.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -66,7 +65,7 @@
           <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/index.html">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="71" column="54" selection-start="3267" selection-end="3267" vertical-scroll-proportion="-0.625">
+                <state line="71" column="54" selection-start="3267" selection-end="3267" vertical-scroll-proportion="0.0">
                   <folding />
                 </state>
               </provider>
@@ -75,7 +74,7 @@
           <file leaf-file-name="aufgabe3.js" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/script/aufgabe3.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="142" column="20" selection-start="5199" selection-end="5199" vertical-scroll-proportion="0.3575419">
+                <state line="153" column="65" selection-start="5543" selection-end="5543" vertical-scroll-proportion="0.6797153">
                   <folding />
                 </state>
               </provider>
@@ -97,7 +96,7 @@
           <file leaf-file-name="primitives.js" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/script/tdl/primitives.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="593" column="0" selection-start="19457" selection-end="19457" vertical-scroll-proportion="0.2935943">
+                <state line="593" column="0" selection-start="19457" selection-end="19457" vertical-scroll-proportion="0.026690392">
                   <folding />
                 </state>
               </provider>
@@ -145,7 +144,7 @@
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+    <navigator proportions="" version="1" splitterProportion="0.5">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -156,53 +155,7 @@
       <autoscrollFromSource />
       <sortByType />
     </navigator>
-    <panes>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aufgabe_3" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aufgabe_3" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aufgabe_3" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aufgabe_3" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Aufgabe_3" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="script" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
-    </panes>
+    <panes />
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
@@ -504,6 +457,11 @@
         <state line="44" column="7" selection-start="774" selection-end="774" vertical-scroll-proportion="0.33333334" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="71" column="54" selection-start="3267" selection-end="3267" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/script/gl-matrix.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="2800" column="4" selection-start="86360" selection-end="86360" vertical-scroll-proportion="0.0" />
@@ -511,21 +469,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/script/tdl/primitives.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="593" column="0" selection-start="19457" selection-end="19457" vertical-scroll-proportion="0.2935943">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="54" selection-start="3267" selection-end="3267" vertical-scroll-proportion="-0.625">
-          <folding />
-        </state>
+        <state line="593" column="0" selection-start="19457" selection-end="19457" vertical-scroll-proportion="0.026690392" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/script/aufgabe3.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="142" column="20" selection-start="5199" selection-end="5199" vertical-scroll-proportion="0.3575419">
+        <state line="153" column="65" selection-start="5543" selection-end="5543" vertical-scroll-proportion="0.6797153">
           <folding />
         </state>
       </provider>
