@@ -22,8 +22,8 @@ jQuery(window).on('load',function(jQuery){
             'const':{
                 'projection':mat4.create(),
                 'view':mat4.create(),
-                'lightPositions': [vec3.create(10,10,10),vec3.create(5, -5,-5)],
-                'lightColor':vec3.create([1,1,1]),
+                'lightPositions': convertLightsToArray(getLights()).positions,
+                'lightColors':convertLightsToArray(getLights()).colors,
                 'camera':vec3.create(0,2,0)
             },
             'unique':{
@@ -32,7 +32,7 @@ jQuery(window).on('load',function(jQuery){
             }
         },
         degree = 0;
-        console.log(uniformVars);
+        console.log(uniformVars.const.lightPositions,uniformVars.const.lightColors )
     //----------------------------------------------------------------------------------
     function initCanvas(){
         $canvas.attr('width',$content.width() *.5)
@@ -46,7 +46,9 @@ jQuery(window).on('load',function(jQuery){
         })
         $shaderSelect.on('change',function(event){
             modelToDraw.setProgram(shader[$('option:selected',event.target).val()]);
-        })
+        }
+
+        )
     }
 	function initGl(){
 	    gl.viewport(0, 0, canvas.width, canvas.width );
@@ -76,13 +78,34 @@ jQuery(window).on('load',function(jQuery){
         var $lightRows = $('#lights tr[id^="light"]');
         $lightRows.each(function(index, row){
             $inputs = $('input[type="number"]',row);
-            console.log($inputs);
-            //lights.positions[row.id] = vec3.create($inputs[0].value, $inputs[1].value, $inputs[2].value);
-            lights.positions[row.id] = vec3.create(12.0,13.0,14.0);
 
-
+            lights.positions[index] = vec3.create([parseFloat($inputs[0].value),parseFloat($inputs[1].value),parseFloat($inputs[2].value)]);
+            lights.colors[index] = vec4.create([parseFloat($inputs[3].value) > 1 ? parseFloat($inputs[3].value) / 255 : parseFloat($inputs[3].value),
+                                                 parseFloat($inputs[4].value) > 1 ? parseFloat($inputs[4].value) / 255 : parseFloat($inputs[4].value),
+                                                 parseFloat($inputs[5].value) > 1 ? parseFloat($inputs[5].value) / 255 : parseFloat($inputs[5].value),
+                                                 $('input[type="checkbox"]',row).attr('checked') == 'checked' ? 1 : 0])
         })
         return lights;
+    }
+
+    function convertLightsToArray(that){
+        var positionArray = [],
+            colorArray = [];
+        $.each(that.positions, function(index, value){
+            $.each(value, function(index, value){
+                positionArray.push(value);
+            })
+        });
+        $.each(that.colors, function(index, value){
+            $.each(value, function(index, value){
+                colorArray.push(value);
+            })
+        });
+        return {
+            'positions':positionArray,
+            'colors':colorArray
+        };
+
     }
 
     function render() {
@@ -119,7 +142,6 @@ jQuery(window).on('load',function(jQuery){
                     //PI/2 RAD ==> 90°
                     mat4.rotateX(uniformVars.unique.model,Math.PI/2);
 
-
                     uniformVars.unique.color[0]= width / 2;
                     uniformVars.unique.color[1]= height / 2;
                     uniformVars.unique.color[2]= depth / 2;
@@ -132,7 +154,6 @@ jQuery(window).on('load',function(jQuery){
     //@Main
     (function(){
         initCanvas();
-        console.log(getLights());
         initUI();
         render();
     })();
