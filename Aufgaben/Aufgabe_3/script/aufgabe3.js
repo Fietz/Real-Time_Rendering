@@ -22,7 +22,7 @@ jQuery(window).on('load',function(jQuery){
             'const':{
                 'projection':mat4.create(),
                 'view':mat4.create(),
-                'lightPosition':vec3.create([10,10,10]),
+                'lightPositions': [vec3.create(10,10,10),vec3.create(5, -5,-5)],
                 'lightColor':vec3.create([1,1,1]),
                 'camera':vec3.create(0,2,0)
             },
@@ -32,9 +32,10 @@ jQuery(window).on('load',function(jQuery){
             }
         },
         degree = 0;
+        console.log(uniformVars);
     //----------------------------------------------------------------------------------
     function initCanvas(){
-        $canvas.attr('width',$content.width())
+        $canvas.attr('width',$content.width() *.5)
                .attr('height',$canvas.width());
 
     };

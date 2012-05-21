@@ -114,7 +114,7 @@
         uniform mat4 view;
         uniform mat4 model;
 
-        uniform vec3 lightPosition;
+        uniform float lightPositions[12];
         uniform vec3 camera;
 
         attribute vec4 position;
@@ -125,9 +125,11 @@
         varying vec3 cameraDirectionW;
 
         void main() {
+            vec3 tempVec = lightPositions[0];
+        //lightPositions[0], lightPositions[1], lightPositions[2]
             vec4 positionW = model * position;
             normalW = (model * vec4(normal, 0.0)).xyz;
-            lightDirectionW = lightPosition - positionW.xyz;
+            lightDirectionW = tempVec - positionW.xyz;
             cameraDirectionW = camera - positionW.xyz;
 
             gl_Position = projection * view * positionW;
