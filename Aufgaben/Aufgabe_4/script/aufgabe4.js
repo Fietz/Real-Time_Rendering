@@ -1,73 +1,64 @@
 jQuery(window).on('load',function(jQuery){
     //@Global
-	window.canvas = document.getElementById('canvas');
-	window.gl = tdl.webgl.setupWebGL(window.canvas);
+    window.canvas = document.getElementById('canvas');
+    window.gl = tdl.webgl.setupWebGL(window.canvas);
 
     //@Private
     var shader = getShader();
     var textures = {
-                    't1':tdl.textures.loadTexture('gfx/negx.png'),
-                    't2':tdl.textures.loadTexture('gfx/negy.png'),
-                    't3':tdl.textures.loadTexture('gfx/negz.png'),
-                    't4':tdl.textures.loadTexture('gfx/sphere04.png'),
-                    't5':tdl.textures.loadTexture('gfx/posy.png'),
-                    't6':tdl.textures.loadTexture('gfx/posz.png'),
-                    't7':tdl.textures.loadTexture('gfx/negx.png')
-                    };
+        'sphere':tdl.textures.loadTexture('gfx/sphere04.png')
+    };
     var degree = 0;
 
     var sphere = new tdl.models.Model(
-        shader['Einfarbig'],
-        tdl.primitives.createSphere(2.3, 35,35),
-        //tdl.primitives.createTorus(0.6,0.5,25,25),
+        shader['EnvironmentMapping'],
+        tdl.primitives.createSphere(1, 35,35),
         textures
 
     )
 
-    var cube = new tdl.models.Model(
-        shader['Einfarbig'],
-        tdl.primitives.createCube(1),
-        //tdl.primitives.createTorus(0.6,0.5,25,25),
-        {}
-
+    var torus = new tdl.models.Model(
+        shader['EnvironmentMapping'],
+        tdl.primitives.createTorus(0.6,0.5,25,25),
+        textures
     )
 
     var uniformVars = {
-            'const':{
-                'projection':mat4.create(),
-                'view':mat4.create(),
-                'lightPosition': vec3.create([0,5,20]),
-                'lightColor':vec3.create([1,1,1]),
-                'camera':vec3.create(0,2,0)
-            },
-            'unique':{
-                'model':mat4.create(),
-                'color':vec3.create([1,1,1])
-            }
-        };
+        'const':{
+            'projection':mat4.create(),
+            'view':mat4.create(),
+            'lightPosition': vec3.create([0,5,20]),
+            'lightColor':vec3.create([1,1,1]),
+            'camera':vec3.create(0,2,0)
+        },
+        'unique':{
+            'model':mat4.create(),
+            'color':vec3.create([1,1,1])
+        }
+    };
 
     //jQuery
-	var $canvas = $('#canvas'),
-	    $content = $('#content');
+    var $canvas = $('#canvas'),
+        $content = $('#content');
 
 
     //----------------------------------------------------------------------------------
     function initCanvas(){
         $canvas.attr('width',$content.width())
-               .attr('height',$canvas.width());
+            .attr('height',$canvas.width());
     };
 
-	function initGl(){
-	    gl.viewport(0, 0, canvas.width, canvas.width );
-	    gl.colorMask(true, true, true, true);
-	    gl.depthMask(true);
-	    gl.clearColor(0.8, 0.8, 0.8, 1);
-	    gl.clearDepth(1);
-	    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+    function initGl(){
+        gl.viewport(0, 0, canvas.width, canvas.width );
+        gl.colorMask(true, true, true, true);
+        gl.depthMask(true);
+        gl.clearColor(0.8, 0.8, 0.8, 1);
+        gl.clearDepth(1);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 
-	    gl.enable(gl.CULL_FACE);
-	    gl.enable(gl.DEPTH_TEST);
-	}
+        gl.enable(gl.CULL_FACE);
+        gl.enable(gl.DEPTH_TEST);
+    }
 
     function getShader(){
         var shader = {};
@@ -92,10 +83,11 @@ jQuery(window).on('load',function(jQuery){
             uniformVars.const.projection);
 
         uniformVars.const.camera[0] = Math.sin(degree) * 4.5;
-        uniformVars.const.camera[1] = Math.cos(degree);
+        uniformVars.const.camera[1] = 0;
         uniformVars.const.camera[2] = Math.cos(degree) * 4.5;
 
         degree >= 360 ? degree = 0 : degree += .001;
+
         mat4.lookAt(
             uniformVars.const.camera,
             vec3.create([0,0,0]),
@@ -104,8 +96,14 @@ jQuery(window).on('load',function(jQuery){
 
         sphere.drawPrep(uniformVars.const);
         mat4.identity(uniformVars.unique.model);
-        //mat4.rotateX(uniformVars.unique.model,Math.PI/4);
+        mat4.translate(uniformVars.unique.model,[-1.2,0.0,0.0])
         sphere.draw(uniformVars.unique);
+
+        torus.drawPrep(uniformVars.const);
+        mat4.identity(uniformVars.unique.model)
+        mat4.translate(uniformVars.unique.model,[1.2,0.0,0.0])
+        mat4.rotateX(uniformVars.unique.model,Math.PI * (degree *.5))
+        torus.draw(uniformVars.unique)
     };
 
     //@Main
