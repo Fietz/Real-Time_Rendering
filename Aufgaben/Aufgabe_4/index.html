@@ -18,13 +18,17 @@
     <nav><ul></ul></nav>
     <hr>
     <section id="content">
-        <h2>Aufgabe 3</h2>
+        <h2>Aufgabe 4: Sph&auml;risches Environment Mapping</h2>
         <canvas id ="canvas" style="border: none;"></canvas>
+        <a title="Texture" href="gfx/sphere04.png"><img src="gfx/sphere04.png" width="300" height="300"></a>
+        <pre class="prettyprint" onload="prettyPrint()">
+
+		</pre>
     </section>
     <hr>
     <footer></footer>
 
-    <script id="vs0" type="text/glsl" name="Einfarbig">
+    <script id="vs1" type="text/glsl" name="EnvironmentMapping">
         uniform mat4 projection;
         uniform mat4 view;
         uniform mat4 model;
@@ -32,7 +36,6 @@
         uniform vec3 lightPosition;
         uniform vec3 camera;
 
-        //from tdl.primitiv return
         attribute vec4 position;
         attribute vec3 normal;
 
@@ -47,16 +50,19 @@
         lightDirectionW = lightPosition - positionW.xyz;
         cameraDirectionW = camera - positionW.xyz;
 
+        //Konvertierung in das Kamerakoordinatensystem
         normalW = (model * vec4(normal, 0.0)).xyz;
+        normalW = (view * vec4(normalW, 0.0)).xyz;
+
         gl_Position = projection * view * model * position;
         }
     </script>
 
-    <script id="fs0" type="text/glsl" name="Einfarbig">
+    <script id="fs1" type="text/glsl" name="EnvironmentMapping">
         precision highp float;
 
         uniform vec3 color;
-        uniform sampler2D t4;
+        uniform sampler2D texture;
 
         varying vec3 normalW;
         varying vec3 lightDirectionW;
@@ -78,7 +84,13 @@
 
 
         void main() {
-        vec3 texColor = texture2D(t4, vec2((normalW.x + 1.0)/2.0, 1.0-(normalW.y+1.0)/2.0)).rgb;
+        /*
+        Texturkoordinaten berechnen nach der gegebenen Formel
+        (s,t) = ( (nx+1)/2 , (ny+1)/2 )
+        nx und ny sind normalisiert
+        */
+        vec3 texColor = texture2D(texture, vec2((normalW.x + 1.0)/2.0, 1.0-(normalW.y+1.0)/2.0)).rgb;
+
         gl_FragColor.rgb = phong(
             normalize(normalW),
             normalize(cameraDirectionW),
