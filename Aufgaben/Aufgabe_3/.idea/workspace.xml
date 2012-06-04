@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0c36b336-76b7-426d-a7e0-06fc1e651a75" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../Aufgabe_4/script/aufgabe4.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../Aufgabe_4/script/aufgabe3.js" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Aufgabe_4/index.html" afterPath="$PROJECT_DIR$/../Aufgabe_4/index.html" />
     </list>
     <ignored path="Aufgabe_3.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -65,28 +62,10 @@
     <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf>
-          <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/index.html">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="71" column="54" selection-start="3267" selection-end="3267" vertical-scroll-proportion="0.0">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="aufgabe3.js" pinned="false" current="true" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/script/aufgabe3.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state line="2" column="0" selection-start="57" selection-end="158" vertical-scroll-proportion="0.053380784">
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="gl-matrix.js" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="gl-matrix.js" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/script/gl-matrix.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="2800" column="4" selection-start="86360" selection-end="86360" vertical-scroll-proportion="0.0">
+                <state line="2800" column="4" selection-start="86360" selection-end="86360" vertical-scroll-proportion="0.01867995">
                   <folding />
                 </state>
               </provider>
@@ -99,7 +78,7 @@
           <file leaf-file-name="primitives.js" pinned="false" current="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/script/tdl/primitives.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="593" column="0" selection-start="19457" selection-end="19457" vertical-scroll-proportion="0.026690392">
+                <state line="607" column="81" selection-start="20309" selection-end="20309" vertical-scroll-proportion="0.018382354">
                   <folding />
                 </state>
               </provider>
@@ -115,21 +94,21 @@
     </FindUsagesManager>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/script/aufgabe3.js" />
+        <option value="$PROJECT_DIR$/index.html" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
+    <option name="x" value="-1" />
     <option name="y" value="24" />
-    <option name="width" value="1296" />
-    <option name="height" value="760" />
+    <option name="width" value="1682" />
+    <option name="height" value="1003" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -339,7 +318,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="24" width="1296" height="760" extended-state="6" />
+    <frame x="-1" y="24" width="1682" height="1003" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -460,24 +439,30 @@
         <state line="44" column="7" selection-start="774" selection-end="774" vertical-scroll-proportion="0.33333334" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="54" selection-start="3267" selection-end="3267" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/script/gl-matrix.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2800" column="4" selection-start="86360" selection-end="86360" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/script/tdl/primitives.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="593" column="0" selection-start="19457" selection-end="19457" vertical-scroll-proportion="0.026690392" />
+        <state line="607" column="81" selection-start="20309" selection-end="20309" vertical-scroll-proportion="0.018382354">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="142" column="66" selection-start="7883" selection-end="7883" vertical-scroll-proportion="0.53915274">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/script/aufgabe3.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="57" selection-end="158" vertical-scroll-proportion="0.053380784">
+        <state line="46" column="18" selection-start="1614" selection-end="1614" vertical-scroll-proportion="0.01867995">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/script/gl-matrix.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2800" column="4" selection-start="86360" selection-end="86360" vertical-scroll-proportion="0.01867995">
           <folding />
         </state>
       </provider>

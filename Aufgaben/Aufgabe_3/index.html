@@ -20,6 +20,14 @@
         section#content table tr td.break{
             border-right: 1px solid black;
         }
+        section select#shaderSelect {
+            width:75px;
+            height: 90px;
+        }
+        section span{
+            float:left;
+            width:80px;
+        }
     </style>
 </head>
 <body>
@@ -27,10 +35,12 @@
     <nav><ul></ul></nav>
     <hr>
     <section id="content">
-        <h2>Aufgabe 3</h2>
+        <h2>Aufgabe 3: Simple Lighting</h2>
         <canvas id ="canvas" style="border: none;"></canvas>
+        <span>Shader:</span>
         <select id="shaderSelect"></select>
         <div id="lights">
+            <span>Lichter:</span>
             <table>
                 <tr id="discription">
                     <td>on/off</td>
@@ -46,44 +56,64 @@
                     <td><input type="number" value="10"></td>
                     <td><input type="number" value="10"></td>
                     <td class="break"><input type="number" value="10"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
+                    <td><input min="0" max="255" type="number" value="255"></td>
+                    <td><input min="0" max="255" type="number" value="255"></td>
+                    <td><input min="0" max="255" type="number" value="255"></td>
                 </tr>
                 <tr id="light1">
                     <td><input type="checkbox"></td>
                     <td><input type="number" value="-10"></td>
                     <td><input type="number" value="-10"></td>
                     <td class="break"><input type="number" value="-10"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
+                    <td><input min="0" max="255" type="number" value="255"></td>
+                    <td><input min="0" max="255" type="number" value="0"></td>
+                    <td><input min="0" max="255" type="number" value="0"></td>
                 </tr>
                 <tr id="light2">
                     <td><input type="checkbox"></td>
                     <td><input type="number" value="-10"></td>
-                    <td><input type="number" value="10"></td>
+                    <td><input type="number" value="-10"></td>
                     <td class="break"><input type="number" value="10"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
+                    <td><input min="0" max="255" type="number" value="0"></td>
+                    <td><input min="0" max="255" type="number" value="255"></td>
+                    <td><input min="0" max="255" type="number" value="0"></td>
                 </tr>
                 <tr id="light3">
-                    <td><input type="checkbox" checked></td>
+                    <td><input type="checkbox"></td>
                     <td><input type="number" value="10"></td>
                     <td><input type="number" value="-10"></td>
                     <td class="break"><input type="number" value="-10"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
-                    <td><input min="0" max="1" type="number" value="0"></td>
-                    <td><input min="0" max="1" type="number" value="255"></td>
+                    <td><input min="0" max="255" type="number" value="0"></td>
+                    <td><input min="0" max="255" type="number" value="0"></td>
+                    <td><input min="0" max="255" type="number" value="255"></td>
                 </tr>
 
             </table>
         </div>
+        <div>
+            <p>Im Kern dieser Aufgabe steht die Implementierung von Toon-Shading unter Verwendung der ThreeD Library (tld).
+            Toon-Shading bezeichnet eine Rendering-Technik, bei der 3D-Grafiken in einer Form dargestellt werden, die an Cartoons erinnert, also aussehen, als w&auml;ren sie von Hand gezeichnet. Der wichtigste Aspekt um diese Darstellung zu realisieren ist, die m&ouml;glichen Farbwerte bzw. Helligkeitswerte auf eine geringe Anzahl (z.B. drei) zu begrenzen. So entstehen gr&ouml;&szlig;ere, zusammenh&auml;ngende Fl&auml;chen. Dem Gegen&uuml;ber stehen Verfahren wie z.B. das Phong-Shading, bei dem es darum geht, m&ouml;glichst realistische Farbverl&auml;ufe zu erzeugen.</p>
+            <h3>3.1 Toon-Shading (Cell-Shading)</h3>
+            <p>Grundlage zur Bearbeitung ist das Beispiel "WebGL Illuminated Spheres" von <a href="https://public.beuth-hochschule.de/~tramberend/12-ss/mmi-rtr/examples/02-tdl-simple/lit.html#3">Beispiel Aufgabe 3</a>
+            Zun&auml;chst werden die dargestellten Kugeln durch Tori (laut Wikipedia ist dies der Plural von „Torus“)  ersetzt.
+            Zwei weitere Schritte sind dann wesentlich, um die gew&uuml;nschten Effekte zu erreichen:</p>
+            <ol>
+            <li>Diskretisierung der Oberfl&auml;chensintensit&auml;t in Abstufungen: Dies ist m&ouml;glich &uuml;ber rein mathematische Berechnungen bzw. Bitreduktion, die es erm&ouml;glichen, die Anzahl der m&ouml;glichen Ergebnisse einer Berechnung zu begrenzen.</li>
+            <li>Besondere Hervorhebung des Glanzlichtes: Dazu wird der Winkel zwischen dem einfallenden Licht und der Reflektion berechnet. Ist dieser klein wird ausschlie&szlig;lich die Farbe der Lichtquelle zur Darstellung des Objekts verwendet</li>
+            </ol>
+            <h3>3.2 Mehrere Lichtquellen</h3>
+            <p>Im n&auml;chsten Schritt soll es m&ouml;glich sein, den Toon-Shader mit mehreren, unabh&auml;ngigen und verschiedenfarbigen Lichtquellen zu verwenden.</p>
+            <p>Die Anzahl der Lichtquellen wird auf 4 festgelegt, die &uuml;ber das User-Interface beliebig ein und ausgeschaltet werden k&ouml;nnen, ebenfalls k&ouml;nnen Richtung und Farbe der Lichtquelle eingegeben werden.</p>
+            <h4>Dazu sind einige &auml;nderungen am Quellcode vorzunehmen:</h4>
+            <ol>
+            <li>Zuvor wurde lediglich ein einziger Lichtrichtungsvektor (als vec3-Objekt) an die Shaderprogramme &uuml;bergeben. Nun sind es stattdessen vier dieser Objekte. (Konkret umgesetzt wurde dies &uuml;ber ein einzelnes Array mit 4*3 Werten, die die jeweiligen Richtungsvektoren repr&auml;sentieren)</li>
+            <li>&Auml;hnliches gilt f&uuml;r die Lichtfarbvektoren, statt einem werden vier an die Shaderprogramme &uuml;bertragen.</li>
+            <li>Im Anschluss wird f&uuml;r jeden Punkt der jeweilige Einfluss der einzelnen Lichtquellen ausgerechnet. Die jeweiligen Ergebnisse werden addiert, um somit Lichtquellen kombinieren zu k&ouml;nnen. Dabei muss nat&uuml;rlich ber&uuml;cksichtiget werden, wie viele der Lichtquellen tats&auml;chlich aktiviert sind.</li>
+            </ol>
+        </div>
     </section>
     <hr>
     <footer></footer>
-    <!-- script src="../../script/cms.js" type="text/javascript"></script-->
     <!-- SHADER -->
     <script id="vs0" type="text/glsl" name="Einfarbig">
         uniform mat4 projection;
@@ -194,13 +224,11 @@
 
         vec4 positionW = model * position;
         normalW = (model * vec4(normal, 0.0)).xyz;
-        //lightDirectionW = tempVec - positionW.xyz;
 
         for(int i = 0; i <= 3; i++) {
-            lightDirectionW[i*3] = lightPositions[i*4] - positionW.x;
-            lightDirectionW[i*3+1] = lightPositions[i*3+1] - positionW.x;
-            lightDirectionW[i*3+2] = lightPositions[i*3+2] - positionW.x;
-
+            lightDirectionW[i*3] = lightPositions[i*3] - positionW.x;
+            lightDirectionW[(i*3)+1] = lightPositions[(i*3)+1] - positionW.y;
+            lightDirectionW[(i*3)+2] = lightPositions[(i*3)+2] - positionW.z;
         }
 
 
@@ -228,37 +256,33 @@
 
 
         vec3 lambert(vec3 normal, vec3 lightDirection, vec3 lightColor, vec3 color) {
-        return 0.1 * color * lightColor +
-        0.6 * color * lightColor *
-        (ceil(max(0.0, dot(normal, lightDirection))*toonSteps)/toonSteps);
+            return 0.1 * color * lightColor +
+                   0.6 * color * lightColor *
+                   (ceil(max(0.0, dot(normal, lightDirection))*toonSteps)/toonSteps);
         }
 
         vec3 phong(vec3 normal, vec3 camera, vec3 lightDirection, vec3 lightColor, vec3 color) {
+            vec3 tempColor;
+            if(max(0.0, dot(reflect(-camera, normal),lightDirection)) >= 0.85){
+                tempColor = lightColor;
+            }else{
+                tempColor = lambert(normal, lightDirection, lightColor, color);
+            }
+            return tempColor;
 
-        float toonFactor = max(0.0, dot(reflect(-camera, normal),lightDirection));
-
-        if(toonFactor >= 0.7){
-        toonFactor = 1.0;
-        }else{
-        toonFactor = 0.0;
-        }
-
-        return  lambert(normal, lightDirection, lightColor, color)
-        + 0.6 * lightColor * toonFactor
-        ;
         }
 
         void main() {
 
 
-        vec3 rgbVec = vec3(0);
+        vec3 rgbVec = vec3(0.0,0.0,0.0);
 
 
         for(int i = 0; i <= 3; i++) {
         if(lightColors[i*4+3] == 1.0){
-        vec3 lightDirectionVec = vec3(lightDirectionW[i*3], lightDirectionW[i*3+1], lightDirectionW[i*3+2]);
+        vec3 lightDirectionVec = vec3(lightDirectionW[i*3], lightDirectionW[(i*3)+1], lightDirectionW[(i*3)+2]);
 
-        vec3 lightColorVec = vec3(lightColors[i*4], lightColors[i*4+1], lightColors[i*4+2]);
+        vec3 lightColorVec = vec3(lightColors[i*4], lightColors[(i*4)+1], lightColors[(i*4)+2]);
             rgbVec += phong(
                 normalize(normalW),
                 normalize(cameraDirectionW),

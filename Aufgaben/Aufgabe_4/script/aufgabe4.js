@@ -18,9 +18,17 @@ jQuery(window).on('load',function(jQuery){
 
     var sphere = new tdl.models.Model(
         shader['Einfarbig'],
-        tdl.primitives.createSphere(1.5, 20,20),
+        tdl.primitives.createSphere(2.3, 35,35),
         //tdl.primitives.createTorus(0.6,0.5,25,25),
         textures
+
+    )
+
+    var cube = new tdl.models.Model(
+        shader['Einfarbig'],
+        tdl.primitives.createCube(1),
+        //tdl.primitives.createTorus(0.6,0.5,25,25),
+        {}
 
     )
 
@@ -28,9 +36,9 @@ jQuery(window).on('load',function(jQuery){
             'const':{
                 'projection':mat4.create(),
                 'view':mat4.create(),
-                'lightPosition': vec3.create([0,0,10]),
+                'lightPosition': vec3.create([0,5,20]),
                 'lightColor':vec3.create([1,1,1]),
-                'camera':vec3.create(3.5,0,3.5)
+                'camera':vec3.create(0,2,0)
             },
             'unique':{
                 'model':mat4.create(),
@@ -45,7 +53,7 @@ jQuery(window).on('load',function(jQuery){
 
     //----------------------------------------------------------------------------------
     function initCanvas(){
-        $canvas.attr('width',$content.width() *.5)
+        $canvas.attr('width',$content.width())
                .attr('height',$canvas.width());
     };
 
@@ -91,12 +99,12 @@ jQuery(window).on('load',function(jQuery){
         mat4.lookAt(
             uniformVars.const.camera,
             vec3.create([0,0,0]),
-            vec3.create([0,1,0]),
+            vec3.create([0,2,0]),
             uniformVars.const.view);
 
         sphere.drawPrep(uniformVars.const);
         mat4.identity(uniformVars.unique.model);
-        mat4.rotateX(uniformVars.unique.model,Math.PI/4);
+        //mat4.rotateX(uniformVars.unique.model,Math.PI/4);
         sphere.draw(uniformVars.unique);
     };
 

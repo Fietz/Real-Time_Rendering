@@ -18,7 +18,7 @@
     <nav><ul></ul></nav>
     <hr>
     <section id="content">
-        <h2>Aufgabe 3</h2>
+        <h2>Aufgabe 4: Sph&auml;risches Environment Mapping</h2>
         <canvas id ="canvas" style="border: none;"></canvas>
     </section>
     <hr>
@@ -48,6 +48,7 @@
         cameraDirectionW = camera - positionW.xyz;
 
         normalW = (model * vec4(normal, 0.0)).xyz;
+        normalW = (view * vec4(normalW, 0.0)).xyz;
         gl_Position = projection * view * model * position;
         }
     </script>

@@ -35,7 +35,7 @@ jQuery(window).on('load',function(jQuery){
         console.log(uniformVars.const.lightPositions,uniformVars.const.lightColors )
     //----------------------------------------------------------------------------------
     function initCanvas(){
-        $canvas.attr('width',$content.width() *.5)
+        $canvas.attr('width',$content.width())
                .attr('height',$canvas.width());
 
     };
@@ -46,9 +46,23 @@ jQuery(window).on('load',function(jQuery){
         })
         $shaderSelect.on('change',function(event){
             modelToDraw.setProgram(shader[$('option:selected',event.target).val()]);
-        }
+        });
 
-        )
+        $('div#lights input[type="number"]').on('input',function(event){
+
+            var lights = convertLightsToArray(getLights());
+            console.log(lights.positions)
+            uniformVars.const.lightColors = lights.colors;
+            uniformVars.const.lightPositions = lights.positions;
+        });
+        $('div#lights input').on('change',function(event){
+
+            var lights = convertLightsToArray(getLights());
+            uniformVars.const.lightColors = lights.colors;
+            uniformVars.const.lightPositions = lights.positions;
+        });
+
+
     }
 	function initGl(){
 	    gl.viewport(0, 0, canvas.width, canvas.width );
