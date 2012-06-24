@@ -10,6 +10,8 @@
     <script type="text/javascript" src="../../script/prettify/prettify.js"></script>
     <script src="script/gl-matrix.js" type="text/javascript"></script>
     <script src="script/tdl/base.js" type="text/javascript"></script>
+    <script src="script/tdl/buffers.js" type="text/javascript"></script>
+    <script src="script/tdl/framebuffers.js" type="text/javascript"></script>
     <script src="script/tdl/webgl.js" type="text/javascript"></script>
     <script src="script/tdl/models.js" type="text/javascript"></script>
     <script src="script/tdl/primitives.js" type="text/javascript"></script>
@@ -58,8 +60,11 @@
         varying vec3 normalW;
         varying vec3 lightDirectionW;
         varying vec3 cameraDirectionW;
+		
 
         void main() {
+
+		
 
         vec4 positionW = model * position;
         normalW = (model * vec4(normal, 0.0)).xyz;

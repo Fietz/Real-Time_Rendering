@@ -39,7 +39,7 @@ jQuery(window).on('load',function(jQuery){
             'view':mat4.create(),
             'lightPosition': vec3.create([0,5,5]),
             'lightColor':vec3.create([1,1,1]),
-            'camera':vec3.create([0,0,4.5])
+            'camera':vec3.create([0,2,4.5])
         },
         'unique':{
             'model':mat4.create(),
@@ -51,6 +51,8 @@ jQuery(window).on('load',function(jQuery){
     var $canvas = $('#canvas'),
         $content = $('#content');
 
+    
+   
 
     //----------------------------------------------------------------------------------
     function initCanvas(){
@@ -59,7 +61,7 @@ jQuery(window).on('load',function(jQuery){
     };
 
     function initGl(){
-        gl.viewport(0, 0, canvas.width, canvas.width );
+    	gl.viewport(0, 0, canvas.width, canvas.width );
         gl.colorMask(true, true, true, true);
         gl.depthMask(true);
         gl.clearColor(0.8, 0.8, 0.8, 1);
@@ -68,6 +70,11 @@ jQuery(window).on('load',function(jQuery){
 
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);
+
+       
+       
+        
+        
     }
 
     function getShader(){
@@ -97,15 +104,32 @@ jQuery(window).on('load',function(jQuery){
             vec3.create([0,0,0]),
             vec3.create([0,2,0]),
             uniformVars.const.view);
+        
+        speed = 0.1;
+        
+       mat4.translate(uniformVars.const.view, [0, 0, degree]);
+       degree >= 50 ? degree = 0 : degree += speed ;
+    
+        
+        
         $(tree).each(function(index,component){
             component.drawPrep(uniformVars.const);
-            mat4.identity(uniformVars.unique.model);
-            mat4.translate(uniformVars.unique.model,[0.0,index/2,0.0])
-            component.draw(uniformVars.unique);
+            for (var depth = 0; depth < 20 ; depth += 1){
+            	 for (var row = -3; row < 4 ; row += 2){
+            		 mat4.identity(uniformVars.unique.model);
+            		 mat4.translate(uniformVars.unique.model,[row,index/2,-depth*3])
+            		 
+            		 component.draw(uniformVars.unique);
+            	 }
+            }
 
         })
 
     };
+    
+    
+    
+    
 
     //@Main
     (function(){
