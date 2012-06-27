@@ -1,0 +1,22 @@
+1. DephBuffer richtig einsetzen
+	gl.enable(gl.DEPTH_TEST)
+	a: Evtl. prüfen ob es aktiviert und deaktiviert werden muss
+	evtl. gl.depthFunc(gl.LESS) weiter betrachten. Evtl. hilfreich
+2. ObjectBuffer verwenden
+	a: Welche Buffer?
+	b: Wie und welche Buffer in der 2ten Phase verwenden?
+3. Position der einzelnen Fragmente berechnen
+	a:Was sind die interpolierten w-Koordinaten
+	einfach nur die in den Buffer geschrieben Z-Werte nach der Transformation?
+	b: evtl. nicht notwendig (Koordinaten in JS vorhanden) variyng varibale?!
+4. Farben interpolieren
+
+Nice to have
+1. Geschwindigkeits regler
+2. SkyBox (Gebirge xD)
+3. Z manipulation des FOV
+4. Mousebewegung --> Motionblur
+5. Maskieren von bereichen die nicht geblurt werden sollen.
+	a: Mittelpunkt des blickes --> Tunnelblick
+
+
