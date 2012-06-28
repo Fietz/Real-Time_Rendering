@@ -5,9 +5,7 @@ jQuery(window).on('load',function(jQuery){
 
     //@Private
     var shader = getShader();
-    var textures = {
-
-    };
+    var textures = {};
     var degree = 0;
     tree = [
         new tdl.models.Model(
@@ -51,15 +49,37 @@ jQuery(window).on('load',function(jQuery){
     var $canvas = $('#canvas'),
         $content = $('#content');
 
-    
-   
+    //create Plane to render the pass2 Texture
+    var positions = new tdl.primitives.AttribBuffer(3,4);
+    var indices = new tdl.primitives.AttribBuffer(3,4, 'Uint16Array');
+
+    positions.push([-1,-1,0]);
+    positions.push([1,-1,0]);
+    positions.push([1,1,0]);
+    positions.push([-1,1,0]);
+    indices.push([0,1,2]);
+    indices.push([2,3,0]);
+
+    //initlize the Canvas Width and Height
+
+    $canvas.attr('width',$content.width() *.5)
+           .attr('height',$canvas.width());
+
+    //Motion Blur Variables
+    var frameBuffer = {
+        'buffer': tdl.framebuffers.createFramebuffer($canvas.width(), $canvas.height(), true)
+    };
+    console.log(frameBuffer)
+    frameBuffer['plane'] = new tdl.models.Model(
+        shader['MotionBlur'],
+        {position: positions,indices:indices},
+        frameBuffer.buffer.texture
+    );
+    console.log(frameBuffer)
+    var backBuffer = new tdl.framebuffers.BackBuffer(document.getElementById('canvas'));
+
 
     //----------------------------------------------------------------------------------
-    function initCanvas(){
-        $canvas.attr('width',$content.width() *.5)
-            .attr('height',$canvas.width());
-    };
-
     function initGl(){
     	gl.viewport(0, 0, canvas.width, canvas.width );
         gl.colorMask(true, true, true, true);
@@ -89,14 +109,14 @@ jQuery(window).on('load',function(jQuery){
 
 
     function render() {
-        initGl();
+        //initGl();
         tdl.webgl.requestAnimationFrame(render, canvas);
 
         mat4.perspective(
             60,
             canvas.clientWidth / canvas.clientHeight,
             .1,
-            10,
+            50,
             uniformVars.const.projection);
 
         mat4.lookAt(
@@ -105,13 +125,20 @@ jQuery(window).on('load',function(jQuery){
             vec3.create([0,2,0]),
             uniformVars.const.view);
         
-        speed = 0.1;
+        speed = 0.05;
         
        mat4.translate(uniformVars.const.view, [0, 0, degree]);
        degree >= 50 ? degree = 0 : degree += speed ;
-    
-        
-        
+
+
+
+        frameBuffer['buffer'].bind();
+        gl.depthMask(true);
+        gl.clear(gl.DEPTH_BUFFER_BIT);
+
+        gl.enable(gl.CULL_FACE);
+        gl.enable(gl.DEPTH_TEST);
+
         $(tree).each(function(index,component){
             component.drawPrep(uniformVars.const);
             for (var depth = 0; depth < 20 ; depth += 1){
@@ -124,16 +151,17 @@ jQuery(window).on('load',function(jQuery){
             }
 
         })
+        backBuffer.bind();
+        gl.depthMask(false);
+        gl.disable(gl.DEPTH_TEST);
+        frameBuffer['plane'].drawPrep(uniformVars.const);
+        frameBuffer['plane'].draw();
 
     };
-    
-    
-    
-    
 
     //@Main
     (function(){
-        initCanvas();
+        //initGl();
         render();
     })();
 });
