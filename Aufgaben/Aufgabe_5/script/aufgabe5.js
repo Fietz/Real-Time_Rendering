@@ -134,7 +134,8 @@ jQuery(window).on('load',function(jQuery){
 
         frameBuffer['buffer'].bind();
         gl.depthMask(true);
-        gl.clear(gl.DEPTH_BUFFER_BIT);
+        gl.clearColor(0.8, 0.8, 0.8, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
 
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);
