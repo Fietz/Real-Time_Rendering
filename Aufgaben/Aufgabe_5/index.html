@@ -125,10 +125,24 @@
         varying vec2 texCoordI;
         uniform sampler2D frame;
 
+		// anzahl der verwendeten farbwerte für den blur
+		const int samples = 10;
 
-        void main(){
+		// TODO: nen errechnten velocity vektor verwenden
+		const vec2 velocity = vec2(-0.03,0.01);
+		
+		void main(){
+			// farbwert vom zielpixel
+			vec3 color = texture2D(frame,texCoordI).rgb;
 
-            gl_FragColor.rgb = vec3(1.0,1.0,1.0) -  texture2D(frame, texCoordI).rgb;
+			// in richtung des velocityvektors 10 schritte machen und die jeweiligen farbwerte abgreifen
+			for (int x = 1; x <= samples; x++){
+				vec2 tc = texCoordI + vec2(velocity.xy / float(samples) * float(x));
+				color += texture2D(frame, tc).rgb;
+			}
+
+			// Durchschnitt der Farbwerte ausrechnen				
+			gl_FragColor.rgb = color / float(samples);
             gl_FragColor.a = 1.0;
         }
     </script>
