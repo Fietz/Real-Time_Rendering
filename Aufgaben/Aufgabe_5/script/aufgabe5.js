@@ -67,7 +67,7 @@ jQuery(window).on('load',function(jQuery){
 
     //Motion Blur Variables
     var frameBuffer = {
-        'buffer': tdl.framebuffers.createFramebuffer($canvas.width(), $canvas.height(), true)
+        'buffer': new tdl.framebuffers.Float32Framebuffer($canvas.width(), $canvas.height(), true)
     };
     console.log(frameBuffer)
     frameBuffer['plane'] = new tdl.models.Model(
@@ -157,6 +157,7 @@ jQuery(window).on('load',function(jQuery){
         gl.disable(gl.DEPTH_TEST);
         frameBuffer['plane'].drawPrep(uniformVars.const);
         frameBuffer['plane'].draw();
+        console.log(frameBuffer['plane'])
 
     };
 

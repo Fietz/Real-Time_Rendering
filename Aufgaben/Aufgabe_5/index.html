@@ -104,14 +104,13 @@
         normalize(cameraDirectionW),
         normalize(lightDirectionW),
         lightColor, color);
-        gl_FragColor.a = 1.0;
+        gl_FragColor.a = gl_FragCoord.z;
         }
     </script>
     <script id="vs1" type="text/glsl" name="MotionBlur">
         attribute vec4 position;
 
         varying vec2 texCoordI;
-
 
         void main() {
             texCoordI = (position.xy + 1.0 ) / 2.0;
@@ -125,7 +124,7 @@
         varying vec2 texCoordI;
         uniform sampler2D frame;
 
-		// anzahl der verwendeten farbwerte für den blur
+		// anzahl der verwendeten farbwerte fï¿½r den blur
 		const int samples = 10;
 
 		// TODO: nen errechnten velocity vektor verwenden
@@ -142,11 +141,12 @@
 			}
 
 			// Durchschnitt der Farbwerte ausrechnen				
-			gl_FragColor.rgb = color / float(samples);
+			//gl_FragColor.rgb = color / float(samples);
+            //gl_FragColor.a = 1.0;
+            gl_FragColor.rgb = vec3(texture2D(frame, texCoordI).w);
             gl_FragColor.a = 1.0;
         }
     </script>
-    <!-- vec3(1.0,1.0,1.0) -  -->
     <script src="../../script/cms.js" type="text/javascript"></script>
     <script src="script/aufgabe5.js" type="text/javascript"></script>
 </body>
