@@ -13,6 +13,7 @@
     <script src="script/tdl/buffers.js" type="text/javascript"></script>
     <script src="script/tdl/framebuffers.js" type="text/javascript"></script>
     <script src="script/tdl/webgl.js" type="text/javascript"></script>
+     <script src="script/tdl/math.js" type="text/javascript"></script>
     <script src="script/tdl/models.js" type="text/javascript"></script>
     <script src="script/tdl/primitives.js" type="text/javascript"></script>
     <script src="script/tdl/textures.js" type="text/javascript"></script>
@@ -123,6 +124,8 @@
 
         varying vec2 texCoordI;
         uniform sampler2D frame;
+		uniform mat4 projection;
+        uniform mat4 view;
 
 		// anzahl der verwendeten farbwerte f�r den blur
 		const int samples = 10;
@@ -130,8 +133,25 @@
 		// TODO: nen errechnten velocity vektor verwenden
 		const vec2 velocity = vec2(-0.03,0.01);
 		
+		
 		void main(){
+			
 			// farbwert vom zielpixel
+			float zOverW = texture2D(frame, texCoordI).w;
+			
+			vec4 H = vec4(texCoordI.x*2.0-1.0,(1.0-texCoordI.y)*2.0-1.0, zOverW,1.0);
+						
+			// statt "H * view * projection" muss eigentlich "H* inverse(view*projection)"
+			vec4 D = H * view * projection;
+			vec4 worldPos = D / D.w;
+
+			vec4 currentPos = H;
+
+			// statt "worldPos * view * projection" muss eigentlich "worldPos * previous(view * projection)
+			vec4 previousPos = worldPos * view * projection;
+			previousPos /= previousPos.w;
+			vec2 velocity = vec2 ((currentPos.x-previousPos.x)/2.0, (currentPos.y-previousPos.y)/2.0); 
+
 			vec3 color = texture2D(frame,texCoordI).rgb;
 
 			// in richtung des velocityvektors 10 schritte machen und die jeweiligen farbwerte abgreifen
@@ -141,9 +161,9 @@
 			}
 
 			// Durchschnitt der Farbwerte ausrechnen				
-			//gl_FragColor.rgb = color / float(samples);
+			gl_FragColor.rgb = color / float(samples);
             //gl_FragColor.a = 1.0;
-            gl_FragColor.rgb = vec3(texture2D(frame, texCoordI).w);
+            //gl_FragColor.rgb = vec3(texture2D(frame, texCoordI).w);
             gl_FragColor.a = 1.0;
         }
     </script>
