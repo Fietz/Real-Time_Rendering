@@ -152,14 +152,15 @@ jQuery(window).on('load',function(jQuery){
             }
 
         })
-
-        uniformVars.const.inverseViewProjectionMat = mat4.inverse(mat4.multiply(uniformVars.const.view,uniformVars.const.projection));
+        tmp = mat4.create();
+            mat4.multiply(uniformVars.const.view,uniformVars.const.projection,tmp);
+        mat4.inverse(tmp,uniformVars.const.inverseViewProjectionMat );
         backBuffer.bind();
         gl.depthMask(false);
         gl.disable(gl.DEPTH_TEST);
         frameBuffer['plane'].drawPrep(uniformVars.const);
         frameBuffer['plane'].draw();
-        uniformVars.const.previousInverseViewProjectionMat = uniformVars.const.inverseViewProjectionMat;
+        mat4.multiply(uniformVars.const.view,uniformVars.const.projection,uniformVars.const.previousInverseViewProjectionMat);
 
 
 
