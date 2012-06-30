@@ -157,7 +157,7 @@ jQuery(window).on('load',function(jQuery){
         gl.disable(gl.DEPTH_TEST);
         frameBuffer['plane'].drawPrep(uniformVars.const);
         frameBuffer['plane'].draw();
-        console.log(frameBuffer['plane'])
+
 
     };
 

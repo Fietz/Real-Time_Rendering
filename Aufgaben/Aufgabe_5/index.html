@@ -140,7 +140,7 @@
 				color += texture2D(frame, tc).rgb;
 			}
 
-			// Durchschnitt der Farbwerte ausrechnen				
+			// Durchschnitt der Farbwerte ausrechnen
 			//gl_FragColor.rgb = color / float(samples);
             //gl_FragColor.a = 1.0;
             gl_FragColor.rgb = vec3(texture2D(frame, texCoordI).w);
