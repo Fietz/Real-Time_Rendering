@@ -144,13 +144,13 @@
 			vec4 H = vec4(texCoordI.x*2.0-1.0,(1.0-texCoordI.y)*2.0-1.0, zOverW,1.0);
 						
 			// statt "H * view * projection" muss eigentlich "H* inverse(view*projection)"
-			vec4 D = H * inverseViewProjectionMat;
+			vec4 D =  inverseViewProjectionMat * H;
 			vec4 worldPos = D / D.w;
 
 			vec4 currentPos = H;
 
 			// statt "worldPos * view * projection" muss eigentlich "worldPos * previous(view * projection)
-			vec4 previousPos = worldPos * previousViewProjectionMat;
+			vec4 previousPos =  previousViewProjectionMat * worldPos;
 			previousPos /= previousPos.w;
 			vec2 velocity = vec2 ((currentPos.x-previousPos.x)/2.0, (currentPos.y-previousPos.y)/2.0); 
 
@@ -164,6 +164,7 @@
 
 			// Durchschnitt der Farbwerte ausrechnen				
 			gl_FragColor.rgb = color / float(samples);
+			//gl_FragColor.rgb = texture2D(frame,texCoordI).rgb;
             //gl_FragColor.a = 1.0;
             //gl_FragColor.rgb = vec3(texture2D(frame, texCoordI).w);
             gl_FragColor.a = 1.0;
