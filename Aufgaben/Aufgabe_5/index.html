@@ -127,7 +127,7 @@
 		uniform mat4 projection;
         uniform mat4 view;
         uniform mat4 inverseViewProjectionMat;
-        uniform mat4 previousInverseViewProjectionMat;
+        uniform mat4 previousViewProjectionMat;
 
 		// anzahl der verwendeten farbwerte f�r den blur
 		const int samples = 10;
@@ -150,7 +150,7 @@
 			vec4 currentPos = H;
 
 			// statt "worldPos * view * projection" muss eigentlich "worldPos * previous(view * projection)
-			vec4 previousPos = worldPos * previousInverseViewProjectionMat;
+			vec4 previousPos = worldPos * previousViewProjectionMat;
 			previousPos /= previousPos.w;
 			vec2 velocity = vec2 ((currentPos.x-previousPos.x)/2.0, (currentPos.y-previousPos.y)/2.0); 
 

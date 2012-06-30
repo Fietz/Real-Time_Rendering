@@ -37,7 +37,9 @@ jQuery(window).on('load',function(jQuery){
             'view':mat4.create(),
             'lightPosition': vec3.create([0,5,5]),
             'lightColor':vec3.create([1,1,1]),
-            'camera':vec3.create([0,2,4.5])
+            'camera':vec3.create([0,2,4.5]),
+            'inverseViewProjectionMat':mat4.create(),
+            'previousViewProjectionMat':mat4.create()
         },
         'unique':{
             'model':mat4.create(),
@@ -153,14 +155,15 @@ jQuery(window).on('load',function(jQuery){
 
         })
         tmp = mat4.create();
-            mat4.multiply(uniformVars.const.view,uniformVars.const.projection,tmp);
+        mat4.multiply(uniformVars.const.view,uniformVars.const.projection,tmp);
         mat4.inverse(tmp,uniformVars.const.inverseViewProjectionMat );
         backBuffer.bind();
         gl.depthMask(false);
         gl.disable(gl.DEPTH_TEST);
         frameBuffer['plane'].drawPrep(uniformVars.const);
         frameBuffer['plane'].draw();
-        mat4.multiply(uniformVars.const.view,uniformVars.const.projection,uniformVars.const.previousInverseViewProjectionMat);
+        mat4.multiply(uniformVars.const.view,uniformVars.const.projection,uniformVars.const.previousViewProjectionMat);
+        console.log(uniformVars);
 
 
 
