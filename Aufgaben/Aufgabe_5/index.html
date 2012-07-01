@@ -81,11 +81,8 @@
         varying vec3 normalW;
         varying vec3 lightDirectionW;
         varying vec3 cameraDirectionW;
-		
 
         void main() {
-
-		
 
         vec4 positionW = model * position;
         normalW = (model * vec4(normal, 0.0)).xyz;
@@ -107,14 +104,14 @@
         varying vec3 cameraDirectionW;
 
         vec3 lambert(vec3 normal, vec3 light, vec3 intensity, vec3 reflectivity) {
-        return 0.1 * reflectivity * intensity +
-        0.6 * reflectivity * intensity * max(0.0, dot(normal, light));
+            return 0.1 * reflectivity * intensity +
+                0.6 * reflectivity * intensity * max(0.0, dot(normal, light));
         }
 
         vec3 phong(vec3 normal, vec3 eye, vec3 light, vec3 intensity, vec3 reflectivity) {
-        return lambert(normal, light, intensity, reflectivity) +
-        0.3 * intensity * pow(max(0.0, dot(reflect(-eye, normal),
-        light)), 10.0);
+            return lambert(normal, light, intensity, reflectivity) +
+                0.3 * intensity * pow(max(0.0, dot(reflect(-eye, normal),
+                light)), 10.0);
         }
 
         void main() {
@@ -125,6 +122,10 @@
         normalize(cameraDirectionW),
         normalize(lightDirectionW),
         lightColor, color);
+
+        //Speichern der Z-Werte in der Textur, daa man keinen zugriff auf den DepthBuffer hat
+        //Der AlphaKanal wird nicht benötigt.
+        //Es werden alle Pixel der Textur gezeichnet
         gl_FragColor.a = gl_FragCoord.z;
         }
     </script>
@@ -156,33 +157,35 @@
 
             const int samples = 10;
 
-			// farbwert vom zielpixel
+            // Farbwert des aktuellen Pixel
 			float zOverW = texture2D(frame, tmpTexCoord).w;
-			
+
+            //Berechnen der aktuellen Pixelposition im Weltkoordinatensystem nach GPUG EMS
 			vec4 H = vec4(tmpTexCoord.x*2.0-1.0,(1.0-tmpTexCoord.y)*2.0-1.0, zOverW,1.0);
-						
-			// statt "H * view * projection" muss eigentlich "H* inverse(view*projection)"
+
 			vec4 D =  inverseViewProjectionMat * H;
 			vec4 worldPos = D / D.w;
 
 			vec4 currentPos = H;
 
-			// statt "worldPos * view * projection" muss eigentlich "worldPos * previous(view * projection)
+            //Berechnen der vorherigen Pixelposition im Weltkoordinatensystem nach GPUG EMS
 			vec4 previousPos =  previousViewProjectionMat * worldPos;
 			previousPos /= previousPos.w;
+
+            //Berechnen der Positionsdifferenz (Bewegungsgeschwindigkeit) nach GPU GEMS
 			vec2 velocity = vec2 ((currentPos.x-previousPos.x)/2.0, (currentPos.y-previousPos.y)/2.0); 
 
 			vec4 color = texture2D(frame,tmpTexCoord);
             tmpTexCoord += velocity;
-			// in richtung des velocityvektors 10 schritte machen und die jeweiligen farbwerte abgreifen
+
+			// In richtung des Velocityvektor sample-Schritte machen, die jeweiligen Farbwerte auslesen und zur Pixalfarbe addieren
 			for (int x = 1; x <= samples; x++){
 				color += texture2D(frame, tmpTexCoord);
                 tmpTexCoord += velocity;
 			}
 
-        // Durchschnitt der Farbwerte ausrechnen
+            // Durchschnitt der Farbwerte ausrechnen
 			gl_FragColor.rgb = (color / float(samples)).rgb;
-			//gl_FragColor.rgb = texture2D(frame,texCoordI).rgb;
             gl_FragColor.a = 1.0;
         }
     </script>
@@ -202,6 +205,7 @@
         precision highp float;
 
         varying vec2 texCoordI;
+
         uniform sampler2D frame;
 		uniform mat4 projection;
         uniform mat4 view;
@@ -210,41 +214,41 @@
 
 		void main(){
 
+
             const int samples = 10;
 
-			// farbwert vom zielpixel
-			float zOverW = texture2D(frame, texCoordI).w;
-			
-			vec4 H = vec4(texCoordI.x*2.0-1.0,(1.0-texCoordI.y)*2.0-1.0, zOverW,1.0);
-						
-			// statt "H * view * projection" muss eigentlich "H* inverse(view*projection)"
-			vec4 D =  inverseViewProjectionMat * H;
-			vec4 worldPos = D / D.w;
+            // Farbwert des aktuellen Pixel
+            float zOverW = texture2D(frame, tmpTexCoord).w;
 
-			vec4 currentPos = H;
+            //Berechnen der aktuellen Pixelposition im Weltkoordinatensystem nach GPUG EMS
+            vec4 H = vec4(tmpTexCoord.x*2.0-1.0,(1.0-tmpTexCoord.y)*2.0-1.0, zOverW,1.0);
 
-			// statt "worldPos * view * projection" muss eigentlich "worldPos * previous(view * projection)
-			vec4 previousPos =  previousViewProjectionMat * worldPos;
-			previousPos /= previousPos.w;
+            vec4 D =  inverseViewProjectionMat * H;
+            vec4 worldPos = D / D.w;
+
+            vec4 currentPos = H;
+
+            //Berechnen der vorherigen Pixelposition im Weltkoordinatensystem nach GPUG EMS
+            vec4 previousPos =  previousViewProjectionMat * worldPos;
+            previousPos /= previousPos.w;
+
+            //Berechnen der Positionsdifferenz (Bewegungsgeschwindigkeit) nach GPU GEMS;
 			vec2 velocity = vec2 ((currentPos.x-previousPos.x)*2.0, (currentPos.y-previousPos.y)*2.0);
 
 			vec4 color = texture2D(frame,texCoordI);
-           
-			// in richtung des velocityvektors 10 schritte machen und die jeweiligen farbwerte abgreifen
+			// in richtung des velocityvektors sample-Schritte machen, die jeweiligen Farbwerte auslesen und zur Pixalfarbe addieren
 			for (int x = 1; x <= samples; x++){
 				vec2 tc = texCoordI + vec2(velocity.xy / float(samples) * float(x));
 				color += texture2D(frame,tc);
 			}
 
 
-        // Durchschnitt der Farbwerte ausrechnen
-			
+            // Durchschnitt der Farbwerte ausrechnen
 			gl_FragColor.rgb = (color / float(samples)).rgb;
 			gl_FragColor.a = 1.0;
         }
     </script>
-    
-    
+
     <script id="vs3" type="text/glsl" name="Skybox">
         attribute vec4 position;
         varying vec4 v_position;
@@ -263,6 +267,52 @@
         void main() {
             vec4 t = inverseViewProjectionMatSB * v_position;
             gl_FragColor = textureCube(skyBox, normalize(t.xyz / t.w));
+        }
+    </script>
+
+    <script id="vs4" type="text/glsl" name="Phong">
+        attribute vec4 position;
+
+        varying vec2 texCoordI;
+
+        void main() {
+        texCoordI = (position.xy + 1.0 ) / 2.0;
+        gl_Position = position;
+        }
+    </script>
+
+    <script id="fs4" type="text/glsl">
+        precision highp float;
+
+        varying vec2 texCoordI;
+        uniform sampler2D frame;
+
+        void main(){
+            gl_FragColor.rgb = texture2D(frame,texCoordI).rgb;
+            gl_FragColor.a = 1.0;
+        }
+    </script>
+
+    <script id="vs5" type="text/glsl" name="Depth Map">
+        attribute vec4 position;
+
+        varying vec2 texCoordI;
+
+        void main() {
+            texCoordI = (position.xy + 1.0 ) / 2.0;
+            gl_Position = position;
+        }
+    </script>
+
+    <script id="fs5" type="text/glsl">
+        precision highp float;
+
+        varying vec2 texCoordI;
+        uniform sampler2D frame;
+
+        void main() {
+            gl_FragColor.rgb = vec3(texture2D(frame,texCoordI).w);
+            gl_FragColor.a = 1.0;
         }
     </script>
     <script src="../../script/cms.js" type="text/javascript"></script>

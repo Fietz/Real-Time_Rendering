@@ -5,6 +5,7 @@ jQuery(window).on('load',function(jQuery){
 
     //@Private
     var shader = getShader();
+    console.log(shader)
     var speed = 0.0;
 
     var skyBoxTextures = tdl.textures.loadTexture([
