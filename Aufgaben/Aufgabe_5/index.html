@@ -218,10 +218,10 @@
             const int samples = 10;
 
             // Farbwert des aktuellen Pixel
-            float zOverW = texture2D(frame, tmpTexCoord).w;
+            float zOverW = texture2D(frame, texCoordI).w;
 
             //Berechnen der aktuellen Pixelposition im Weltkoordinatensystem nach GPUG EMS
-            vec4 H = vec4(tmpTexCoord.x*2.0-1.0,(1.0-tmpTexCoord.y)*2.0-1.0, zOverW,1.0);
+            vec4 H = vec4(texCoordI.x*2.0-1.0,(1.0-texCoordI.y)*2.0-1.0, zOverW,1.0);
 
             vec4 D =  inverseViewProjectionMat * H;
             vec4 worldPos = D / D.w;
