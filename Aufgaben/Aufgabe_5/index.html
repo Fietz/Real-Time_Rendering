@@ -132,8 +132,8 @@
 		// anzahl der verwendeten farbwerte f�r den blur
 		const int samples = 10;
 
-		// TODO: nen errechnten velocity vektor verwenden
-		const vec2 velocity = vec2(-0.03,0.01);
+		// TODO von USER festlegen lassen
+		const bool blurIsOn = true;
 		
 		
 		void main(){
@@ -161,11 +161,16 @@
 				vec2 tc = texCoordI + vec2(velocity.xy / float(samples) * float(x));
 				color += texture2D(frame, tc).rgb;
 			}
-
-			// Durchschnitt der Farbwerte ausrechnen				
-			gl_FragColor.rgb = color / float(samples);
-			//gl_FragColor.rgb = texture2D(frame,texCoordI).rgb;
-            //gl_FragColor.a = 1.0;
+	
+			if (blurIsOn) {
+				// Durchschnitt der Farbwerte ausrechnen				
+				gl_FragColor.rgb = color / float(samples);
+			} else {
+				// Normalen Farbwert nehmen
+				gl_FragColor.rgb = texture2D(frame,texCoordI).rgb;
+			}
+			
+           // TODO rausnhemen
             //gl_FragColor.rgb = vec3(texture2D(frame, texCoordI).w);
             gl_FragColor.a = 1.0;
         }

@@ -130,9 +130,8 @@ jQuery(window).on('load',function(jQuery){
         speed = 0.05;
         
        mat4.translate(uniformVars.const.view, [0, 0, degree]);
-       degree >= 50 ? degree = 0 : degree += speed ;
-
-
+       degree > 50 ? degree = 0 : degree += speed ;
+       degree < 0 ? degree = 50 : degree += speed ;
 
         frameBuffer['buffer'].bind();
         gl.depthMask(true);
@@ -144,8 +143,8 @@ jQuery(window).on('load',function(jQuery){
 
         $(tree).each(function(index,component){
             component.drawPrep(uniformVars.const);
-            for (var depth = 0; depth < 20 ; depth += 1){
-            	 for (var row = -3; row < 4 ; row += 2){
+            for (var depth = 0; depth < 25 ; depth += 1){
+            	 for (var row = -5; row <= 5 ; row += 2){
             		 mat4.identity(uniformVars.unique.model);
             		 mat4.translate(uniformVars.unique.model,[row,index/2,-depth*3])
             		 
