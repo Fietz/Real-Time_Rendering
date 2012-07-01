@@ -43,12 +43,25 @@
     <section id="content">
         <h2>Aufgabe 5: Motion Blur</h2>
         <canvas id ="canvas" style="border: none;"></canvas>
-
+        <div id="controls">
+        <div id="playContainer">
+            <input id="controlButton" type="button" value="Stop"/>
+        </div>
+        <div id="attributeContainer">
+            <label for="speed">Geschwindigkeit: </label>
+            <input id="speed" type="range" min="-100" max="100" value="0"/>
+            <span id="speedOut">0</span>
+        </div>
+        <div id=""shaderContainer">
+            <label for="shaderSelect">Shader: </label>
+            <select id="shaderSelect"></select>
+        </div>
+        </div>
     </section>
     <hr>
     <footer></footer>
 
-    <script id="vs0" type="text/glsl" name="Phong">
+    <script id="vs0" type="text/glsl" name="PassOne">
         uniform mat4 projection;
         uniform mat4 view;
         uniform mat4 model;
@@ -130,13 +143,13 @@
         uniform mat4 inverseViewProjectionMat;
         uniform mat4 previousViewProjectionMat;
 
-		// anzahl der verwendeten farbwerte f�r den blur
-		const int samples = 5;
-
 		vec2 tmpTexCoord = texCoordI;
 		
 		void main(){
-			
+
+
+            const int samples = 10;
+
 			// farbwert vom zielpixel
 			float zOverW = texture2D(frame, tmpTexCoord).w;
 			
@@ -189,13 +202,10 @@
         uniform mat4 inverseViewProjectionMat;
         uniform mat4 previousViewProjectionMat;
 
-		// anzahl der verwendeten farbwerte f�r den blur
-		const int samples = 10;
-
-		
-		
 		void main(){
-			
+
+            const int samples = 10;
+
 			// farbwert vom zielpixel
 			float zOverW = texture2D(frame, texCoordI).w;
 			
@@ -210,7 +220,7 @@
 			// statt "worldPos * view * projection" muss eigentlich "worldPos * previous(view * projection)
 			vec4 previousPos =  previousViewProjectionMat * worldPos;
 			previousPos /= previousPos.w;
-			vec2 velocity = vec2 ((currentPos.x-previousPos.x)/2.0, (currentPos.y-previousPos.y)/2.0); 
+			vec2 velocity = vec2 ((currentPos.x-previousPos.x)*2.0, (currentPos.y-previousPos.y)*2.0);
 
 			vec4 color = texture2D(frame,texCoordI);
            
@@ -219,6 +229,7 @@
 				vec2 tc = texCoordI + vec2(velocity.xy / float(samples) * float(x));
 				color += texture2D(frame,tc);
 			}
+
 
         // Durchschnitt der Farbwerte ausrechnen
 			

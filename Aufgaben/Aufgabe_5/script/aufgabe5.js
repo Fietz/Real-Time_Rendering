@@ -5,6 +5,8 @@ jQuery(window).on('load',function(jQuery){
 
     //@Private
     var shader = getShader();
+    var speed = 0.0;
+    var samples = 10;
 
     var skyBoxTextures = tdl.textures.loadTexture([
         'textures/rightdark.jpg',
@@ -36,26 +38,26 @@ jQuery(window).on('load',function(jQuery){
 
     var tree = [
         new tdl.models.Model(
-            shader['Phong'],
+            shader['PassOne'],
             tdl.primitives.createCylinder(.2,.5,20,20),
             textures
         )
         ,
-    new tdl.models.Model(
-        shader['Phong'],
-        tdl.primitives.createTruncatedCone(.5,0,.7,20,20),
-        textures
-    ),
         new tdl.models.Model(
-            shader['Phong'],
+            shader['PassOne'],
             tdl.primitives.createTruncatedCone(.5,0,.7,20,20),
             textures
         ),
-    new tdl.models.Model(
-            shader['Phong'],
-            tdl.primitives.createTruncatedCone(.5,0,.7,20,20),
-            textures
-        )
+        new tdl.models.Model(
+                shader['PassOne'],
+                tdl.primitives.createTruncatedCone(.5,0,.7,20,20),
+                textures
+            ),
+        new tdl.models.Model(
+                shader['PassOne'],
+                tdl.primitives.createTruncatedCone(.5,0,.7,20,20),
+                textures
+            )
     ];
 
     var uniformVars = {
@@ -67,7 +69,8 @@ jQuery(window).on('load',function(jQuery){
             'camera':vec3.create([0,2.5,25]),
             'inverseViewProjectionMat':new Float32Array(16),
             'inverseViewProjectionMatSB':new Float32Array(16),
-            'previousViewProjectionMat':new Float32Array(16)
+            'previousViewProjectionMat':new Float32Array(16),
+            'samples':samples
         },
         'unique':{
             'model':mat4.create(),
@@ -77,7 +80,11 @@ jQuery(window).on('load',function(jQuery){
 
     //jQuery
     var $canvas = $('#canvas'),
-        $content = $('#content');
+        $content = $('#content'),
+        $controlButton = $('#controlButton'),
+        $shaderSelect = $('#shaderSelect'),
+        $speed = $('#speed'),
+        $speedOut = $('#speedOut');
 
     //create Plane to render the pass2 Texture
     var positions = new tdl.primitives.AttribBuffer(3,4);
@@ -91,42 +98,50 @@ jQuery(window).on('load',function(jQuery){
     indices.push([2,3,0]);
 
     //initlize the Canvas Width and Height
-
-    $canvas.attr('width',$content.width() *.5)
+    $canvas.attr('width',$content.width())
            .attr('height',$canvas.width());
 
-    //Motion Blur Variables
+    //Motion Blur Buffer
     var frameBuffer = {
         'buffer': new tdl.framebuffers.Float32Framebuffer($canvas.width(), $canvas.height(), true)
     };
-    console.log(frameBuffer)
+
     frameBuffer['plane'] = new tdl.models.Model(
         shader['MotionBlur'],
         {position: positions,indices:indices},
         frameBuffer.buffer.texture
     );
-    console.log(frameBuffer)
+
     var backBuffer = new tdl.framebuffers.BackBuffer(document.getElementById('canvas'));
 
 
-    //----------------------------------------------------------------------------------
-    function initGl(){
-    	gl.viewport(0, 0, canvas.width, canvas.width );
-        gl.colorMask(true, true, true, true);
-        gl.depthMask(true);
-        gl.clearColor(0.8, 0.8, 0.8, 1);
-        gl.clearDepth(1);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+    function initUI(){
+        $controlButton.on('click',function(event){
+           if(event.target.value === 'Stop'){
+               event.target.value = 'Play';
+           } else {
+               event.target.value = 'Stop';
+           }
+        });
 
-        gl.enable(gl.CULL_FACE);
-        gl.enable(gl.DEPTH_TEST);
+        $shaderSelect.attr('size',$(shader).size()+1);
+        $.each(shader,function(name){
+            $shaderSelect.append('<option>'+name+'</option>');
+        })
+        $shaderSelect.on('change',function(event){
+            frameBuffer['plane'].setProgram(shader[$('option:selected',event.target).val()]);
+        });
 
-       
-       
-        
-        
+        $speed.on('change', function(event){
+            var currentSpeed = parseFloat(event.target.value);
+            speed = currentSpeed / 1000;
+            $speedOut.text(currentSpeed);
+
+        });
+
     }
 
+    //----------------------------------------------------------------------------------
     function getShader(){
         var shader = {};
         $('script[id^="vs"]').each(function(index,element){
@@ -137,91 +152,83 @@ jQuery(window).on('load',function(jQuery){
         return shader;
     }
 
-
     function render() {
-        //initGl();
-        tdl.webgl.requestAnimationFrame(render, canvas);
-
-        tdl.fast.matrix4.perspective(
-            uniformVars.const.projection,
-            tdl.math.degToRad(30),
-            canvas.clientWidth / canvas.clientHeight,
-            .1,
-            50
-            );
-
-        tdl.fast.matrix4.lookAt(
-            uniformVars.const.view,
-            uniformVars.const.camera,
-            vec3.create([0,0,0]),
-            vec3.create([0,1.0,0])
-            );
-        
-        speed = 0.1;
-        
-       mat4.translate(uniformVars.const.view, [0, 0, cameraZPosition]);
-       cameraZPosition > 50 ? cameraZPosition = 0 : cameraZPosition += speed ;
-       cameraZPosition < 0 ? cameraZPosition = 50 : cameraZPosition += speed ;
-
-        frameBuffer['buffer'].bind();
-        gl.depthMask(true);
-        gl.clearColor(0.8, 0.8, 0.8, 1);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-
-        gl.enable(gl.CULL_FACE);
-        gl.enable(gl.DEPTH_TEST);
-        gl.depthMask(false);
-
-
+        var tMat4 = tdl.fast.matrix4;
         var viewProjection = new Float32Array(16);
-        tdl.fast.matrix4.copy(viewProjection, uniformVars.const.view);
-        tdl.fast.matrix4.setTranslation(viewProjection, [0, 0, 0]);
-        tdl.fast.matrix4.mul(viewProjection, viewProjection, uniformVars.const.projection);
-        tdl.fast.matrix4.inverse(uniformVars.const.inverseViewProjectionMatSB, viewProjection);
-
-        var tmp = new Float32Array(16);
-        tdl.fast.matrix4.mul(tmp,uniformVars.const.view,uniformVars.const.projection);
-        tdl.fast.matrix4.inverse(uniformVars.const.inverseViewProjectionMat,tmp)
-
-
-       // tmp = mat4.create();
-       // mat4.multiply(uniformVars.const.view,uniformVars.const.projection,tmp);
-       // mat4.inverse(tmp,uniformVars.const.inverseViewProjectionMat);
-
-        skyBox.drawPrep(uniformVars.const);
-        skyBox.draw();
-
-        gl.depthMask(true);
-
-        $(tree).each(function(index,component){
-            component.drawPrep(uniformVars.const);
-            for (var depth = 0; depth < 25 ; depth += 1){
-            	 for (var row = -5; row <= 5 ; row += 2){
-            		 mat4.identity(uniformVars.unique.model);
-            		 mat4.translate(uniformVars.unique.model,[row,index/2,-depth*3])
-            		 
-            		 component.draw(uniformVars.unique);
-            	 }
-            }
-
-        })
-
-        backBuffer.bind();
-        gl.depthMask(false);
-        gl.disable(gl.DEPTH_TEST);
-        frameBuffer['plane'].drawPrep(uniformVars.const);
-        frameBuffer['plane'].draw();
-
-        tdl.fast.matrix4.mul(uniformVars.const.previousViewProjectionMat,uniformVars.const.view,uniformVars.const.projection);
+        var tmpViewProjectMatViewProjectMat = new Float32Array(16);
+        tdl.webgl.requestAnimationFrame(render, canvas);
+        if($controlButton.val() === 'Stop'){
 
 
 
+            tMat4.perspective(
+                uniformVars.const.projection,
+                tdl.math.degToRad(45),
+                canvas.clientWidth / canvas.clientHeight,
+                .1,
+                50
+                );
 
+            tMat4.lookAt(
+                uniformVars.const.view,
+                uniformVars.const.camera,
+                vec3.create([0,0,0]),
+                vec3.create([0,1.0,0])
+                );
+
+            mat4.translate(uniformVars.const.view, [0, 0, cameraZPosition]);
+            cameraZPosition > 50 ? cameraZPosition = 0 : cameraZPosition += speed ;
+            cameraZPosition < 0 ? cameraZPosition = 50 : cameraZPosition += speed ;
+
+            frameBuffer['buffer'].bind();
+            gl.depthMask(true);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+
+            gl.enable(gl.CULL_FACE);
+            gl.enable(gl.DEPTH_TEST);
+            gl.depthMask(false);
+
+            tMat4.mul(tmpViewProjectMatViewProjectMat,uniformVars.const.view,uniformVars.const.projection);
+            tMat4.inverse(uniformVars.const.inverseViewProjectionMat,tmpViewProjectMatViewProjectMat)
+            // SkyBox -----------------------------------------------------------------------------------------
+            tMat4.copy(viewProjection, uniformVars.const.view);
+            tMat4.setTranslation(viewProjection, [0, 0, 0]);
+            tMat4.mul(viewProjection, viewProjection, uniformVars.const.projection);
+            tMat4.inverse(uniformVars.const.inverseViewProjectionMatSB, viewProjection);
+            skyBox.drawPrep(uniformVars.const);
+            skyBox.draw();
+
+            gl.depthMask(true);
+
+            $(tree).each(function(index,component){
+                component.drawPrep(uniformVars.const);
+                for (var depth = 0; depth < 25 ; depth += 1){
+                     for (var row = -5; row <= 5 ; row += 2){
+                         mat4.identity(uniformVars.unique.model);
+                         mat4.translate(uniformVars.unique.model,[row,index/2,-depth*3])
+
+                         component.draw(uniformVars.unique);
+                     }
+                }
+
+            })
+
+            backBuffer.bind();
+            gl.depthMask(false);
+            gl.disable(gl.DEPTH_TEST);
+            frameBuffer['plane'].drawPrep(uniformVars.const);
+            frameBuffer['plane'].draw();
+
+            tMat4.mul(uniformVars.const.previousViewProjectionMat,uniformVars.const.view,uniformVars.const.projection);
+
+
+
+        }
     };
 
     //@Main
     (function(){
-        //initGl();
+        initUI();
         render();
     })();
 });
