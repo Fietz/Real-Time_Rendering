@@ -5,9 +5,36 @@ jQuery(window).on('load',function(jQuery){
 
     //@Private
     var shader = getShader();
-    var textures = {};
+
+    var skyBoxTextures = tdl.textures.loadTexture([
+        'textures/rightdark.jpg',
+        'textures/leftdark.jpg',
+        'textures/topdark.jpg',
+        'textures/botdark.jpg',
+        'textures/frontdark.jpg',
+        'textures/backdark.jpg'
+    ]);
+
+    var textures = {
+        skyBox:skyBoxTextures
+    };
     var degree = 0;
-    tree = [
+
+    //Skybox taken from
+    //http://code.google.com/p/webglsamples/source/browse/modern-skybox/modern-skybox.html?r=74ca30ba92bf717f44420afb9ca988dc836868e6
+    var arrays = tdl.primitives.createPlane(2, 2, 1, 1);
+    // Don't need normals or texcoords
+    delete arrays['normal'];
+    delete arrays['texCoord'];
+    // reorient from xz plane to xy plane and move to back of clipspace in z.
+    tdl.primitives.reorient(arrays,
+        [1, 0, 0, 0,
+         0, 0, 1, 0,
+         0,-1, 0, 0,
+         0, 0, 0.9999, 1]);
+    var skyBox = new tdl.models.Model(shader['Skybox'], arrays, textures);
+
+    var tree = [
         new tdl.models.Model(
             shader['Phong'],
             tdl.primitives.createCylinder(.2,.5,20,20),
@@ -29,7 +56,7 @@ jQuery(window).on('load',function(jQuery){
             tdl.primitives.createTruncatedCone(.5,0,.7,20,20),
             textures
         )
-    ]
+    ];
 
     var uniformVars = {
         'const':{
@@ -37,9 +64,10 @@ jQuery(window).on('load',function(jQuery){
             'view':mat4.create(),
             'lightPosition': vec3.create([0,5,5]),
             'lightColor':vec3.create([1,1,1]),
-            'camera':vec3.create([0,2,4.5]),
-            'inverseViewProjectionMat':mat4.create(),
-            'previousViewProjectionMat':mat4.create()
+            'camera':vec3.create([0,2.5,25]),
+            'inverseViewProjectionMat':new Float32Array(16),
+            'inverseViewProjectionMatSB':new Float32Array(16),
+            'previousViewProjectionMat':new Float32Array(16)
         },
         'unique':{
             'model':mat4.create(),
@@ -114,25 +142,26 @@ jQuery(window).on('load',function(jQuery){
         //initGl();
         tdl.webgl.requestAnimationFrame(render, canvas);
 
-        mat4.perspective(
-            60,
+        tdl.fast.matrix4.perspective(
+            uniformVars.const.projection,
+            tdl.math.degToRad(30),
             canvas.clientWidth / canvas.clientHeight,
             .1,
-            50,
-            uniformVars.const.projection);
+            50
+            );
 
-        mat4.lookAt(
+        tdl.fast.matrix4.lookAt(
+            uniformVars.const.view,
             uniformVars.const.camera,
             vec3.create([0,0,0]),
-            vec3.create([0,2,0]),
-            uniformVars.const.view);
+            vec3.create([0,1.0,0])
+            );
         
         speed = 0.1;
         
        mat4.translate(uniformVars.const.view, [0, 0, degree]);
-       degree >= 50 ? degree = 0 : degree += speed ;
-
-
+       degree > 50 ? degree = 0 : degree += speed ;
+       degree < 0 ? degree = 50 : degree += speed ;
 
         frameBuffer['buffer'].bind();
         gl.depthMask(true);
@@ -141,11 +170,33 @@ jQuery(window).on('load',function(jQuery){
 
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);
+        gl.depthMask(false);
+
+
+        var viewProjection = new Float32Array(16);
+        tdl.fast.matrix4.copy(viewProjection, uniformVars.const.view);
+        tdl.fast.matrix4.setTranslation(viewProjection, [0, 0, 0]);
+        tdl.fast.matrix4.mul(viewProjection, viewProjection, uniformVars.const.projection);
+        tdl.fast.matrix4.inverse(uniformVars.const.inverseViewProjectionMatSB, viewProjection);
+
+        var tmp = new Float32Array(16);
+        tdl.fast.matrix4.mul(tmp,uniformVars.const.view,uniformVars.const.projection);
+        tdl.fast.matrix4.inverse(uniformVars.const.inverseViewProjectionMat,tmp)
+
+
+       // tmp = mat4.create();
+       // mat4.multiply(uniformVars.const.view,uniformVars.const.projection,tmp);
+       // mat4.inverse(tmp,uniformVars.const.inverseViewProjectionMat);
+
+        skyBox.drawPrep(uniformVars.const);
+        skyBox.draw();
+
+        gl.depthMask(true);
 
         $(tree).each(function(index,component){
             component.drawPrep(uniformVars.const);
-            for (var depth = 0; depth < 20 ; depth += 1){
-            	 for (var row = -3; row < 4 ; row += 2){
+            for (var depth = 0; depth < 25 ; depth += 1){
+            	 for (var row = -5; row <= 5 ; row += 2){
             		 mat4.identity(uniformVars.unique.model);
             		 mat4.translate(uniformVars.unique.model,[row,index/2,-depth*3])
             		 
@@ -154,16 +205,14 @@ jQuery(window).on('load',function(jQuery){
             }
 
         })
-        tmp = mat4.create();
-        mat4.multiply(uniformVars.const.view,uniformVars.const.projection,tmp);
-        mat4.inverse(tmp,uniformVars.const.inverseViewProjectionMat );
+
         backBuffer.bind();
         gl.depthMask(false);
         gl.disable(gl.DEPTH_TEST);
         frameBuffer['plane'].drawPrep(uniformVars.const);
         frameBuffer['plane'].draw();
-       
-        mat4.multiply(uniformVars.const.view,uniformVars.const.projection,uniformVars.const.previousViewProjectionMat);
+
+        tdl.fast.matrix4.mul(uniformVars.const.previousViewProjectionMat,uniformVars.const.view,uniformVars.const.projection);
 
 
 
