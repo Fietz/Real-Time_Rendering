@@ -127,7 +127,7 @@ jQuery(window).on('load',function(jQuery){
             vec3.create([0,2,0]),
             uniformVars.const.view);
         
-        speed = 0.05;
+        speed = 0.1;
         
        mat4.translate(uniformVars.const.view, [0, 0, degree]);
        degree >= 50 ? degree = 0 : degree += speed ;
@@ -163,7 +163,7 @@ jQuery(window).on('load',function(jQuery){
         frameBuffer['plane'].drawPrep(uniformVars.const);
         frameBuffer['plane'].draw();
         mat4.multiply(uniformVars.const.view,uniformVars.const.projection,uniformVars.const.previousViewProjectionMat);
-        console.log(uniformVars);
+
 
 
 
