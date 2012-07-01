@@ -162,6 +162,7 @@ jQuery(window).on('load',function(jQuery){
         gl.disable(gl.DEPTH_TEST);
         frameBuffer['plane'].drawPrep(uniformVars.const);
         frameBuffer['plane'].draw();
+       
         mat4.multiply(uniformVars.const.view,uniformVars.const.projection,uniformVars.const.previousViewProjectionMat);
 
 
