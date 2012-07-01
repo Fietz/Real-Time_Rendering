@@ -5,9 +5,25 @@ jQuery(window).on('load',function(jQuery){
 
     //@Private
     var shader = getShader();
-    var textures = {};
+
+    var skyBoxTextures = tdl.textures.loadTexture([
+        'textures/frontdark.jpg',
+        'textures/backdark.jpg',
+        'textures/topdark.jpg',
+        'textures/botdark.jpg',
+        'textures/leftdark.jpg',
+        'textures/rightdark.jpg'
+    ]);
+    var textures = {
+        skyBox:skyBoxTextures
+    };
     var degree = 0;
-    tree = [
+    var skyBox = new tdl.models.Model(
+        shader['Skybox'],
+        tdl.primitives.createCube(10),
+        textures
+    );
+    var tree = [
         new tdl.models.Model(
             shader['Phong'],
             tdl.primitives.createCylinder(.2,.5,20,20),
@@ -29,7 +45,7 @@ jQuery(window).on('load',function(jQuery){
             tdl.primitives.createTruncatedCone(.5,0,.7,20,20),
             textures
         )
-    ]
+    ];
 
     var uniformVars = {
         'const':{
@@ -140,6 +156,11 @@ jQuery(window).on('load',function(jQuery){
 
         gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);
+        gl.depthMask(false);
+        skybox.drawPrep(uniformVars.const);
+        skybox.draw(uniformVars.unique);
+
+        gl.depthMask(true);
 
         $(tree).each(function(index,component){
             component.drawPrep(uniformVars.const);

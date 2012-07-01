@@ -175,6 +175,31 @@
             gl_FragColor.a = 1.0;
         }
     </script>
+    <script id="vs2" type="text/glsl" name="Skybox">
+    uniform mat4 projection;
+    uniform mat4 view;
+
+    attribute vec4 position;
+
+    varying vec3 directionW;
+
+    void main() {
+        directionW = (vec4(position.xyz, 0.0) * view).xyz;
+        gl_Position = projection * position;
+    }
+    </script>
+    <script id="fs2" type="text/glsl">
+        precision highp float;
+
+        varying vec3 directionW;
+        uniform samplerCube skyBox;
+
+        void main() {
+            gl_FragColor.rgb = textureCube(skyBox, normalize(directionW)).rgb;
+            gl_FragColor.a = 1.0;
+        }
+    </script>
+
     <script src="../../script/cms.js" type="text/javascript"></script>
     <script src="script/aufgabe5.js" type="text/javascript"></script>
 </body>
