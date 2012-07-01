@@ -101,7 +101,7 @@ jQuery(window).on('load',function(jQuery){
     };
     console.log(frameBuffer)
     frameBuffer['plane'] = new tdl.models.Model(
-        shader['MotionBlurGPUG'],
+        shader['MotionBlur'],
         {position: positions,indices:indices},
         frameBuffer.buffer.texture
     );
