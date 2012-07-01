@@ -18,7 +18,7 @@ jQuery(window).on('load',function(jQuery){
     var textures = {
         skyBox:skyBoxTextures
     };
-    var degree = 0;
+    var cameraZPosition = 0;
 
     //Skybox taken from
     //http://code.google.com/p/webglsamples/source/browse/modern-skybox/modern-skybox.html?r=74ca30ba92bf717f44420afb9ca988dc836868e6
@@ -159,9 +159,9 @@ jQuery(window).on('load',function(jQuery){
         
         speed = 0.1;
         
-       mat4.translate(uniformVars.const.view, [0, 0, degree]);
-       degree > 50 ? degree = 0 : degree += speed ;
-       degree < 0 ? degree = 50 : degree += speed ;
+       mat4.translate(uniformVars.const.view, [0, 0, cameraZPosition]);
+       cameraZPosition > 50 ? cameraZPosition = 0 : cameraZPosition += speed ;
+       cameraZPosition < 0 ? cameraZPosition = 50 : cameraZPosition += speed ;
 
         frameBuffer['buffer'].bind();
         gl.depthMask(true);
